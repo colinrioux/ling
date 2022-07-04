@@ -22,11 +22,36 @@ type IRelation interface {
 	IsStronglyConnected() bool
 	IsStronglyTotal() bool
 	IsTrichotomous() bool
+	IsSerial() bool
+	IsWellFounded() bool
+	IsPreOrder() bool
+	IsTotalPreOrder() bool
+	IsPartialOrder() bool
+	IsStrictPartialOrder() bool
+	IsTotalOrder() bool
+	IsStrictTotalOrder() bool
+	IsPartialEquivalent() bool
+	IsEquivalent() bool
+	IsInjective() bool
+	IsFunctional() bool
+	IsOneToOne() bool
+	IsOneToMany() bool
+	IsManyToOne() bool
+	IsManyToMany() bool
+	IsSurjective() bool
+	IsOnto() bool
+	IsFunction() bool
+	IsInjection() bool
+	IsSurjection() bool
+	IsBijection() bool
 	IsSubsetOf(s *Relation) bool
 	I() *Relation
 	R(x interface{}, y interface{}) bool
 	Union(s *Relation) *Relation
 	Intersection(s *Relation) *Relation
+	Composition(s *Relation) *Relation
+	T() *Relation
+	Complement() *Relation
 }
 
 type Relation struct {
@@ -216,9 +241,27 @@ func (r *Relation) IsConnected() bool {
 }
 
 // IsTotal :
-// Checks if this homogeneous relation is total (connected).
+// Checks if this relation is total (if homogeneous => connected). Also known as left-total.
 func (r *Relation) IsTotal() bool {
-	return r.IsConnected()
+	if r.IsHomogeneous() {
+		return r.IsConnected()
+	}
+
+	for _, x := range *r.GetX() {
+		found := false
+		for _, y := range *r.GetY() {
+			if r.R(x, y) {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			return false
+		}
+	}
+
+	return true
 }
 
 // IsStronglyConnected :
@@ -259,6 +302,188 @@ func (r *Relation) IsTrichotomous() bool {
 		}
 	}
 	return true
+}
+
+// IsSerial :
+// Checks if this homogeneous relation is serial.
+func (r *Relation) IsSerial() bool {
+	if !r.IsHomogeneous() {
+		return false
+	}
+
+	for _, x := range *r.GetX() {
+		found := false
+		for _, y := range *r.GetY() {
+			if r.R(x, y) {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			return false
+		}
+	}
+	return true
+}
+
+// IsWellFounded :
+// Checks if this homogeneous relation is well-founded.
+func (r *Relation) IsWellFounded() bool {
+	// TODO
+	return true
+}
+
+// IsPreOrder :
+// Checks if this relation is reflexive & transitive.
+func (r *Relation) IsPreOrder() bool {
+	return r.IsReflexive() && r.IsTransitive()
+}
+
+// IsTotalPreOrder :
+// Checks if this relation IsPreOrder and is connected. Also known as linear preorder or weak order.
+func (r *Relation) IsTotalPreOrder() bool {
+	return r.IsPreOrder() && r.IsConnected()
+}
+
+// IsPartialOrder :
+// Checks if this relation is reflexive, antisymmetric, and transitive.
+func (r *Relation) IsPartialOrder() bool {
+	return r.IsReflexive() && r.IsAntiSymmetric() && r.IsTransitive()
+}
+
+// IsStrictPartialOrder :
+// Checks if this relation is irreflexive, antisymmetric, and transitive.
+func (r *Relation) IsStrictPartialOrder() bool {
+	return !r.IsReflexive() && r.IsAntiSymmetric() && r.IsTransitive()
+}
+
+// IsTotalOrder :
+// Checks if this relation IsPartialOrder and is connected. Also known as linear order, simple order, or chain.
+func (r *Relation) IsTotalOrder() bool {
+	return r.IsPartialOrder() && r.IsConnected()
+}
+
+// IsStrictTotalOrder :
+// Checks if this relation IsStrictPartialOrder and is connected. Also known as strict linear order, strict
+// simple order, or strict chain.
+func (r *Relation) IsStrictTotalOrder() bool {
+	return r.IsStrictPartialOrder() && r.IsConnected()
+}
+
+// IsPartialEquivalent :
+// Checks if this relation is symmetric and transitive.
+func (r *Relation) IsPartialEquivalent() bool {
+	return r.IsSymmetric() && r.IsTransitive()
+}
+
+// IsEquivalent :
+// Checks if this relation IsPartialEquivalent and is reflexive or serial.
+func (r *Relation) IsEquivalent() bool {
+	return r.IsPartialEquivalent() && (r.IsReflexive() || r.IsSerial())
+}
+
+// IsInjective :
+// Checks if this relation is injective. Also known as left-injective.
+func (r *Relation) IsInjective() bool {
+	for _, x := range *r.GetX() {
+		for _, z := range *r.GetX() {
+			for _, y := range *r.GetY() {
+				if r.R(x, y) && r.R(z, y) && x != z {
+					return false
+				}
+			}
+		}
+	}
+	return true
+}
+
+// IsFunctional :
+// Checks if this relation is functional. Also known as right-unique, right-definite, or univalent.
+func (r *Relation) IsFunctional() bool {
+	for _, x := range *r.GetX() {
+		for _, y := range *r.GetY() {
+			for _, z := range *r.GetY() {
+				if r.R(x, y) && r.R(x, z) && y != z {
+					return false
+				}
+			}
+		}
+	}
+	return true
+}
+
+// IsOneToOne :
+// Checks if this relation is one-to-one.
+func (r *Relation) IsOneToOne() bool {
+	return r.IsInjective() && r.IsFunctional()
+}
+
+// IsOneToMany :
+// Checks if this relation is one-to-many.
+func (r *Relation) IsOneToMany() bool {
+	return r.IsInjective() && !r.IsFunctional()
+}
+
+// IsManyToOne :
+// Checks if this relation is many-to-one.
+func (r *Relation) IsManyToOne() bool {
+	return r.IsFunctional() && !r.IsInjective()
+}
+
+// IsManyToMany :
+// Checks if this relation is many-to-many.
+func (r *Relation) IsManyToMany() bool {
+	return !r.IsInjective() && !r.IsFunctional()
+}
+
+// IsSurjective :
+// Checks if this relation is surjective. Also known as right-total or onto.
+func (r *Relation) IsSurjective() bool {
+	for _, y := range *r.GetY() {
+		found := false
+		for _, x := range *r.GetX() {
+			if r.R(x, y) {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			return false
+		}
+	}
+	return true
+}
+
+// IsOnto :
+// Identical to IsSurjective.
+func (r *Relation) IsOnto() bool {
+	return r.IsSurjective()
+}
+
+// IsFunction :
+// Checks if this relation is a function.
+func (r *Relation) IsFunction() bool {
+	return !r.IsHomogeneous() && r.IsFunctional() && r.IsTotal()
+}
+
+// IsInjection :
+// Checks if this relation is an injection.
+func (r *Relation) IsInjection() bool {
+	return r.IsInjective()
+}
+
+// IsSurjection :
+// Checks if this relation is a surjection.
+func (r *Relation) IsSurjection() bool {
+	return r.IsSurjective()
+}
+
+// IsBijection :
+// Checks if this relation is a bijection (injective and surjective).
+func (r *Relation) IsBijection() bool {
+	return r.IsInjection() && r.IsSurjection()
 }
 
 // IsSubsetOf :
@@ -360,5 +585,62 @@ func (r *Relation) Composition(s *Relation) *Relation {
 	if r.GetY() != s.GetX() {
 		return nil
 	}
-	return nil
+
+	var set ECMASet = ECMASet{}
+	for _, x := range *r.GetX() {
+		for _, y := range *r.GetY() {
+			for _, z := range *s.GetY() {
+				if r.R(x, y) && s.R(y, z) {
+					set.Add(NewPair(x, z))
+				}
+			}
+		}
+	}
+
+	return &Relation{
+		graph:       &set,
+		x:           r.x,
+		y:           s.y,
+		homogeneous: r.x == s.y,
+	}
+}
+
+// T :
+// Gets the Converse (Transpose) of this relation.
+func (r *Relation) T() *Relation {
+	var set ECMASet = ECMASet{}
+	for _, x := range *r.GetX() {
+		for _, y := range *r.GetY() {
+			if r.R(x, y) {
+				set.Add(NewPair(y, x))
+			}
+		}
+	}
+
+	return &Relation{
+		graph:       &set,
+		x:           r.x,
+		y:           r.y,
+		homogeneous: r.x == r.y,
+	}
+}
+
+// Complement :
+// Gets the Complement of this relation.
+func (r *Relation) Complement() *Relation {
+	var set ECMASet = ECMASet{}
+	for _, x := range *r.GetX() {
+		for _, y := range *r.GetY() {
+			if !r.R(x, y) {
+				set.Add(NewPair(x, y))
+			}
+		}
+	}
+
+	return &Relation{
+		graph:       &set,
+		x:           r.x,
+		y:           r.y,
+		homogeneous: r.x == r.y,
+	}
 }
