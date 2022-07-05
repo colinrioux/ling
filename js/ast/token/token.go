@@ -10,11 +10,11 @@ type IToken interface {
 
 type Token struct {
 	_type Type
-	value any
+	value interface{}
 }
 
 func (tok Token) String() string {
-	return fmt.Sprintf("Token(%s, %s)", tok._type, tok.value)
+	return fmt.Sprintf("Token(%s, %v)", tok._type, tok.value)
 }
 
 func (tok Token) GetType() Type {
@@ -25,7 +25,7 @@ func (tok Token) GetValue() any {
 	return tok.value
 }
 
-func NewToken(_type Type, value any) *Token {
+func NewToken(_type Type, value interface{}) *Token {
 	return &Token{_type: _type, value: value}
 }
 
@@ -41,6 +41,7 @@ const (
 	EOF
 	COMMENT
 	UNDEFINED
+	NULL
 	BOOLEAN
 	STRING
 	SYMBOL
@@ -63,6 +64,7 @@ var asString = [...]string{
 	"EOF",
 	"COMMENT",
 	"UNDEFINED",
+	"NULL",
 	"BOOLEAN",
 	"STRING",
 	"SYMBOL",

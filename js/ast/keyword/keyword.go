@@ -164,10 +164,10 @@ func GetStrictReservedKeyword(keyword string) StrictReservedKeyword {
 	return SRK_NOTFOUND
 }
 
-// IsIdentifier :
+// IsKeyword :
 // Checks if a keyword is a valid identifier.
 // https://tc39.es/ecma262/#prod-ReservedWord
-func IsIdentifier(kw string) (bool, *token.Token) {
+func IsKeyword(kw string) (bool, *token.Token) {
 	keyword := GetReservedKeyword(kw)
 	strictKeyword := GetStrictReservedKeyword(kw)
 
@@ -175,19 +175,19 @@ func IsIdentifier(kw string) (bool, *token.Token) {
 	if keyword != RK_NOTFOUND {
 		// TODO: contextually await and yield are/arent keywords. How to combat this?
 		if keyword == AWAIT || keyword == YIELD {
-			return false, token.NewToken(token.KEYWORD, keyword)
+			return true, token.NewToken(token.KEYWORD, keyword)
 		}
 
 		// for all other keywords, they are not allowed as identifiers
-		return false, token.NewToken(token.KEYWORD, keyword)
+		return true, token.NewToken(token.KEYWORD, keyword)
 	}
 
 	// valid strict keyword
 	// TODO If strict, check if a strict reserved keyword
 	if strictKeyword != SRK_NOTFOUND {
-		return false, token.NewToken(token.KEYWORD, strictKeyword)
+		return true, token.NewToken(token.KEYWORD, strictKeyword)
 	}
 
 	// for all other identifiers, return true!
-	return true, token.NewToken(token.IDENTIFIER, kw)
+	return false, token.NewToken(token.IDENTIFIER, kw)
 }

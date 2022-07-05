@@ -29,10 +29,10 @@ const (
 	USP                   = UnicodeSpaceSeparator
 )
 
-// IsWhitespace :
+// Whitespace :
 // Checks if a rune is considered ECMA whitespace.
 // https://tc39.es/ecma262/#prod-WhiteSpace
-func IsWhitespace(r rune) bool {
+func Whitespace(r rune) bool {
 	pattern := fmt.Sprintf("(%s|%s|%s|%s|%s)", Tab, VT, FF, ZWNBSP, USP)
 	return Match(pattern, string(r))
 }
@@ -49,22 +49,22 @@ const (
 	PS                 = ParagraphSeparator
 )
 
-// IsLineTerminator :
+// LineTerminator :
 // Checks if a rune is considered ECMA LineTerminator
 // https://tc39.es/ecma262/#prod-LineTerminator
-func IsLineTerminator(r rune) bool {
+func LineTerminator(r rune) bool {
 	rString := string(r)
 	return rString == LF || rString == CR || rString == LS || rString == PS
 }
 
-// IsLineTerminatorSequence :
+// LineTerminatorSequence :
 // Checks if a rune and its lookahead is considered ECMA LineTerminatorSequence.
 // *<CR> <LF> should be considered a single token.
 // https://tc39.es/ecma262/#prod-LineTerminatorSequence
-func IsLineTerminatorSequence(r rune, lookahead rune) bool {
+func LineTerminatorSequence(r rune, lookahead rune) bool {
 	rString := string(r)
 	if rString == LF || rString == CR || rString == LS || rString == PS {
-		return IsLineTerminator(lookahead)
+		return LineTerminator(lookahead)
 	}
 
 	return false
@@ -78,10 +78,10 @@ func Match(pattern string, target string) bool {
 	return uspMatcher.Matches()
 }
 
-// IsSourceCharacter :
+// SourceCharacter :
 // Checks if a rune is considered ECMA SourceCharacter.
 // https://tc39.es/ecma262/#prod-SourceCharacter
-func IsSourceCharacter(r rune) bool {
+func SourceCharacter(r rune) bool {
 	return r >= 0x000 && r <= 0x10FFFF
 }
 
@@ -103,7 +103,7 @@ func IsTrailingSurrogate(r rune) bool {
 // https://tc39.es/ecma262/#sec-utf16encodecodepoint
 func UTF16EncodeCodePoint(cp rune) string {
 	// verify
-	if !IsSourceCharacter(cp) {
+	if !SourceCharacter(cp) {
 		return ""
 	}
 

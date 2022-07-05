@@ -4,6 +4,7 @@ import (
 	"duck/ling/js/ast/keyword"
 	"duck/ling/js/ast/node"
 	"duck/ling/js/ast/token"
+	_type "duck/ling/js/syntax/type"
 	"fmt"
 	"github.com/scott-ainsworth/go-ascii"
 	"strconv"
@@ -45,7 +46,11 @@ func Id() *token.Token {
 		Advance()
 	}
 
-	_, tok := keyword.IsIdentifier(result)
+	ok, tok := keyword.IsKeyword(result)
+	if !ok {
+		v := _type.NewValue(result)
+		tok = v.Token()
+	}
 	return tok
 }
 
