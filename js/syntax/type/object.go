@@ -1,5 +1,7 @@
 package _type
 
+import "errors"
+
 // DataProperty vs AccessorProperty :
 // Data properties vs accessor properties are two different means to define properties.
 // Useful link: https://tc39.es/ecma262/#sec-object-type
@@ -106,7 +108,8 @@ func NewMethodProperty(value interface{}) *MethodProperty {
 }
 
 // ECMAObject :
-// An object is a collection of properties. Most types in ECMA are children of this base object type.
+// An object is a primitive type that is a collection of properties.
+// Most types in ECMA are children of this base object type.
 // https://tc39.es/ecma262/#sec-object-type
 // TODO symbols can be used as keys to these properties. We need to have a means to convert them to appropriate strings
 type ECMAObject struct {
@@ -139,6 +142,14 @@ func NewECMAObject() *ECMAObject {
 			"ownPropertyKeys":   NewMethodProperty(OwnPropertyKeys),
 		},
 	}
+}
+
+// ToBool :
+// Convert this primitive into a boolean value.
+// https://developer.mozilla.org/en-US/docs/Glossary/Falsy
+// https://developer.mozilla.org/en-US/docs/Glossary/Truthy
+func (p *ECMAObject) ToBool() (bool, error) {
+	return false, errors.New("objects cannot be cast to boolean")
 }
 
 // GetPrototypeOf :

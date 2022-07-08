@@ -19,6 +19,7 @@ func NewPrimitiveBigInt(value interface{}) *ECMABigInt {
 // ToBool :
 // Convert this primitive into a boolean value.
 // https://developer.mozilla.org/en-US/docs/Glossary/Falsy
+// https://developer.mozilla.org/en-US/docs/Glossary/Truthy
 func (p *ECMABigInt) ToBool() (bool, error) {
 	v := p.ECMAPrimitive.GetValue().(float64)
 	return v != 0 && !math.IsNaN(v), nil

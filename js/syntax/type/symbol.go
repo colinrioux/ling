@@ -19,6 +19,7 @@ func NewPrimitiveSymbol(value interface{}) *ECMASymbol {
 // ToBool :
 // Convert this primitive into a boolean value.
 // https://developer.mozilla.org/en-US/docs/Glossary/Falsy
+// https://developer.mozilla.org/en-US/docs/Glossary/Truthy
 func (p *ECMASymbol) ToBool() (bool, error) {
 	return false, errors.New("symbols cannot be cast to boolean")
 }

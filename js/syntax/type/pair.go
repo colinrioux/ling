@@ -2,23 +2,23 @@ package _type
 
 import "fmt"
 
-type IPair interface {
-	Equals(other *Pair) bool
+type IECMAPair interface {
+	Equals(other *ECMAPair) bool
 }
 
-type Pair struct {
+type ECMAPair struct {
 	a interface{}
 	b interface{}
 }
 
-func NewPair(a interface{}, b interface{}) *Pair {
-	return &Pair{a: a, b: b}
+func NewPair(a interface{}, b interface{}) *ECMAPair {
+	return &ECMAPair{a: a, b: b}
 }
 
-func (p *Pair) Equals(other *Pair) bool {
+func (p *ECMAPair) Equals(other *ECMAPair) bool {
 	return p.a == other.a && p.b == other.b
 }
 
-func (p *Pair) String() string {
+func (p *ECMAPair) String() string {
 	return fmt.Sprintf("(%v,%v)", p.a, p.b)
 }
