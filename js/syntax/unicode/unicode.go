@@ -1,9 +1,8 @@
 package unicode
 
 import (
-	_type "duck/ling/js/syntax/type"
+	"duck/ling/util"
 	"fmt"
-	"github.com/gijsbers/go-pcre"
 	"math"
 )
 
@@ -15,7 +14,7 @@ const (
 	ZWJ                = ZeroWidthJoiner
 )
 
-// Whitespace Code Points. https://tc39.es/ecma262/#table-white-space-code-points
+// IsWhitespace Code Points. https://tc39.es/ecma262/#table-white-space-code-points
 const (
 	CharacterTabulation   = "\u0009"
 	Tab                   = CharacterTabulation
@@ -29,12 +28,12 @@ const (
 	USP                   = UnicodeSpaceSeparator
 )
 
-// Whitespace :
+// IsWhitespace :
 // Checks if a rune is considered ECMA whitespace.
 // https://tc39.es/ecma262/#prod-WhiteSpace
-func Whitespace(r rune) bool {
+func IsWhitespace(r rune) bool {
 	pattern := fmt.Sprintf("(%s|%s|%s|%s|%s)", Tab, VT, FF, ZWNBSP, USP)
-	return Match(pattern, string(r))
+	return util.Match(pattern, string(r))
 }
 
 // Line Terminators Code Points. https://tc39.es/ecma262/#sec-line-terminators
@@ -49,39 +48,31 @@ const (
 	PS                 = ParagraphSeparator
 )
 
-// LineTerminator :
-// Checks if a rune is considered ECMA LineTerminator
+// IsLineTerminator :
+// Checks if a rune is considered ECMA IsLineTerminator
 // https://tc39.es/ecma262/#prod-LineTerminator
-func LineTerminator(r rune) bool {
+func IsLineTerminator(r rune) bool {
 	rString := string(r)
 	return rString == LF || rString == CR || rString == LS || rString == PS
 }
 
-// LineTerminatorSequence :
-// Checks if a rune and its lookahead is considered ECMA LineTerminatorSequence.
+// IsLineTerminatorSequence :
+// Checks if a rune and its lookahead is considered ECMA IsLineTerminatorSequence.
 // *<CR> <LF> should be considered a single token.
 // https://tc39.es/ecma262/#prod-LineTerminatorSequence
-func LineTerminatorSequence(r rune, lookahead rune) bool {
+func IsLineTerminatorSequence(r rune, lookahead rune) bool {
 	rString := string(r)
 	if rString == LF || rString == CR || rString == LS || rString == PS {
-		return LineTerminator(lookahead)
+		return IsLineTerminator(lookahead)
 	}
 
 	return false
 }
 
-// Match :
-// Helper function for pattern matching.
-func Match(pattern string, target string) bool {
-	uspRgx := pcre.MustCompile(pattern, 0)
-	uspMatcher := uspRgx.MatcherString(target, 0)
-	return uspMatcher.Matches()
-}
-
-// SourceCharacter :
-// Checks if a rune is considered ECMA SourceCharacter.
+// IsSourceCharacter :
+// Checks if a rune is considered ECMA IsSourceCharacter.
 // https://tc39.es/ecma262/#prod-SourceCharacter
-func SourceCharacter(r rune) bool {
+func IsSourceCharacter(r rune) bool {
 	return r >= 0x000 && r <= 0x10FFFF
 }
 
@@ -103,7 +94,7 @@ func IsTrailingSurrogate(r rune) bool {
 // https://tc39.es/ecma262/#sec-utf16encodecodepoint
 func UTF16EncodeCodePoint(cp rune) string {
 	// verify
-	if !SourceCharacter(cp) {
+	if !IsSourceCharacter(cp) {
 		return ""
 	}
 
@@ -139,44 +130,44 @@ func UTF16SurrogatePairToCodePoint(lead rune, trail rune) rune {
 
 // CodePointAt :
 // https://tc39.es/ecma262/#sec-codepointat
-func CodePointAt(str string, pos int) *_type.UnicodeRecord {
-	size := len(str)
-	if pos < 0 || pos >= size {
-		return nil
-	}
-	first := str[pos]
-	cp := rune(first)
-	if !IsLeadingSurrogate(cp) || !IsTrailingSurrogate(cp) {
-		return &_type.UnicodeRecord{CodePoint: cp, CodeUnitCount: 1, IsUnpairedSurrogate: false}
-	}
-
-	if IsTrailingSurrogate(cp) || pos+1 == size {
-		return &_type.UnicodeRecord{CodePoint: cp, CodeUnitCount: 1, IsUnpairedSurrogate: true}
-	}
-
-	second := str[pos+1]
-	cp2 := rune(second)
-	if !IsTrailingSurrogate(cp2) {
-		return &_type.UnicodeRecord{CodePoint: cp, CodeUnitCount: 1, IsUnpairedSurrogate: true}
-	}
-	cp = UTF16SurrogatePairToCodePoint(cp, cp2)
-	return &_type.UnicodeRecord{CodePoint: cp, CodeUnitCount: 2, IsUnpairedSurrogate: false}
-}
+//func CodePointAt(str string, pos int) *_type.UnicodeRecord {
+//	size := len(str)
+//	if pos < 0 || pos >= size {
+//		return nil
+//	}
+//	first := str[pos]
+//	cp := rune(first)
+//	if !IsLeadingSurrogate(cp) || !IsTrailingSurrogate(cp) {
+//		return &_type.UnicodeRecord{CodePoint: cp, CodeUnitCount: 1, IsUnpairedSurrogate: false}
+//	}
+//
+//	if IsTrailingSurrogate(cp) || pos+1 == size {
+//		return &_type.UnicodeRecord{CodePoint: cp, CodeUnitCount: 1, IsUnpairedSurrogate: true}
+//	}
+//
+//	second := str[pos+1]
+//	cp2 := rune(second)
+//	if !IsTrailingSurrogate(cp2) {
+//		return &_type.UnicodeRecord{CodePoint: cp, CodeUnitCount: 1, IsUnpairedSurrogate: true}
+//	}
+//	cp = UTF16SurrogatePairToCodePoint(cp, cp2)
+//	return &_type.UnicodeRecord{CodePoint: cp, CodeUnitCount: 2, IsUnpairedSurrogate: false}
+//}
 
 // StringToCodePoints :
 // https://tc39.es/ecma262/#sec-stringtocodepoints
-func StringToCodePoints(str string) *[]rune {
-	codePoints := []rune{}
-	size := len(str)
-	position := 0
-	var cp *_type.UnicodeRecord
-	for position < size {
-		cp = CodePointAt(str, position)
-		codePoints = append(codePoints, cp.CodePoint)
-		position = position + int(cp.CodeUnitCount)
-	}
-	return &codePoints
-}
+//func StringToCodePoints(str string) *[]rune {
+//	codePoints := []rune{}
+//	size := len(str)
+//	position := 0
+//	var cp *_type.UnicodeRecord
+//	for position < size {
+//		cp = CodePointAt(str, position)
+//		codePoints = append(codePoints, cp.CodePoint)
+//		position = position + int(cp.CodeUnitCount)
+//	}
+//	return &codePoints
+//}
 
 // ParseText :
 // https://tc39.es/ecma262/#sec-parsetext

@@ -22,9 +22,9 @@ func main() {
 	//if rel.I() != nil {
 	//	fmt.Println(rel.I().GetGraph())
 	//}
-	parser.Text = "undefined"
+	parser.Text = "1.7976931348623157e+308"
 	fmt.Println(parser.Text)
-	parser.CurrentChar = parser.Text[parser.Pos]
+	parser.CurrentChar = rune(parser.Text[parser.Pos])
 	parser.CurrentToken = parser.GetNextToken()
 	fmt.Println(parser.CurrentToken)
 	//var nde node.IASTNode = *(parser.Expr())

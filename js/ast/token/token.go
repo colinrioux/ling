@@ -46,7 +46,7 @@ const (
 	STRING
 	SYMBOL
 	OBJECT
-	INTEGER
+	NUMBER
 	ADD
 	SUB
 	MUL
@@ -69,7 +69,7 @@ var asString = [...]string{
 	"STRING",
 	"SYMBOL",
 	"OBJECT",
-	"INTEGER",
+	"NUMBER",
 	"ADD",
 	"SUB",
 	"MUL",

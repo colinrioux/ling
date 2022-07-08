@@ -4,34 +4,35 @@ import (
 	"duck/ling/js/ast/keyword"
 	"duck/ling/js/ast/node"
 	"duck/ling/js/ast/token"
+	"duck/ling/js/syntax/literal"
 	_type "duck/ling/js/syntax/type"
+	"duck/ling/js/syntax/unicode"
 	"fmt"
-	"github.com/scott-ainsworth/go-ascii"
 	"strconv"
 )
 
 var Pos = 0
 var CurrentToken *token.Token = nil
-var CurrentChar byte
+var CurrentChar rune
 var Text string
 
-func Peek() byte {
+func Peek() rune {
 	peekPos := Pos + 1
 	if peekPos > len(Text)-1 {
 		return 0
 	}
-	return Text[peekPos]
+	return rune(Text[peekPos])
 }
 
 func SkipWhitespace() {
-	for CurrentChar != 0 && ascii.IsSpace(CurrentChar) {
+	for CurrentChar != 0 && unicode.IsWhitespace(CurrentChar) {
 		Advance()
 	}
 }
 
 func GetInt() int {
 	var res string = ""
-	for CurrentChar != 0 && ascii.IsDigit(CurrentChar) {
+	for CurrentChar != 0 && literal.IsDecimalDigit(CurrentChar) {
 		res += string(CurrentChar)
 		Advance()
 	}
@@ -41,7 +42,7 @@ func GetInt() int {
 
 func Id() *token.Token {
 	result := ""
-	for CurrentChar != 0 && ascii.IsAlnum(CurrentChar) {
+	for CurrentChar != 0 && literal.IsAlphaNumeric(CurrentChar) {
 		result += string(CurrentChar)
 		Advance()
 	}
@@ -56,12 +57,12 @@ func Id() *token.Token {
 
 func GetNextToken() *token.Token {
 	for CurrentChar != 0 {
-		if ascii.IsSpace(CurrentChar) {
+		if unicode.IsWhitespace(CurrentChar) {
 			SkipWhitespace()
 			continue
 		}
 
-		if ascii.IsLetter(CurrentChar) || CurrentChar == '_' {
+		if literal.IsAlpha(CurrentChar) || CurrentChar == '_' {
 			return Id()
 		}
 
@@ -75,8 +76,8 @@ func GetNextToken() *token.Token {
 			return token.NewToken(token.SEMICOLON, ';')
 		}
 
-		if ascii.IsDigit(CurrentChar) {
-			return token.NewToken(token.INTEGER, GetInt())
+		if literal.IsDecimalDigit(CurrentChar) || CurrentChar == '.' {
+			return token.NewToken(token.NUMBER, ParseNumber())
 		}
 
 		if CurrentChar == '+' {
@@ -123,7 +124,7 @@ func Advance() {
 	if Pos > len(Text)-1 {
 		CurrentChar = 0
 	} else {
-		CurrentChar = Text[Pos]
+		CurrentChar = rune(Text[Pos])
 	}
 }
 
@@ -143,8 +144,8 @@ func Factor() *node.IASTNode {
 		nde := Expr()
 		eat(token.RPAREN)
 		return nde
-	} else if tok.GetType() == token.INTEGER {
-		eat(token.INTEGER)
+	} else if tok.GetType() == token.NUMBER {
+		eat(token.NUMBER)
 		nde = node.NewNumberNode(tok)
 		return &nde
 	}
