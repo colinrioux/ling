@@ -9,8 +9,6 @@ package _type
 
 type IECMAPrimitive interface {
 	ToBool() (bool, error)
-	IsSameAs(other *ECMAPrimitive) (bool, error)
-	IsSameAsNonNumeric(other *ECMAPrimitive) (bool, error)
 }
 
 // ECMAPrimitive :
@@ -71,56 +69,6 @@ func (p *ECMAPrimitive) GetValue() interface{} {
 // https://developer.mozilla.org/en-US/docs/Glossary/Falsy
 // https://developer.mozilla.org/en-US/docs/Glossary/Truthy
 func (p *ECMAPrimitive) ToBool() (bool, error) {
-	return false, nil
-}
-
-// IsSameAs :
-// Check if this primitive is the same as the other primitive.
-// https://tc39.es/ecma262/#sec-samevalue
-func (p *ECMAPrimitive) IsSameAs(other *ECMAPrimitive) (bool, error) {
-	if p.GetType() != other.GetType() {
-		return false, nil
-	}
-	if p.GetType() == NumberType_ {
-		// TODO
-		return false, nil
-	}
-
-	if p.GetType() == BigIntType_ {
-		// TODO
-		return false, nil
-	}
-	return p.IsSameAsNonNumeric(other)
-}
-
-// IsSameAsNonNumeric :
-// Check if this primitive is the same as the other primitive.
-// https://tc39.es/ecma262/#sec-samevaluenonnumeric
-func (p *ECMAPrimitive) IsSameAsNonNumeric(other *ECMAPrimitive) (bool, error) {
-	// handle undefined & null types
-	if p.GetType() == UndefinedType_ || p.GetType() == NullType_ {
-		return true, nil
-	}
-
-	// handle string type
-	if p.GetType() == StringType_ {
-		// TODO : does go string allow ecma like strings
-		return p.GetValue().(string) == other.GetValue().(string), nil
-	}
-
-	// handle boolean type
-	if p.GetType() == BooleanType_ {
-		return p.GetValue().(bool) == other.GetValue().(bool), nil
-	}
-
-	// handle symbol type
-	if p.GetType() == SymbolType_ {
-		// TODO
-		return false, nil
-	}
-
-	// otherwise: handle object type
-	// TODO
 	return false, nil
 }
 

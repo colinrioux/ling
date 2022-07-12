@@ -225,16 +225,6 @@ func SetPrototypeOf(target *ECMAObject, v *ECMAObject) *CompletionRecord {
 	return NewCompletionRecord(ThrowCompletion, nil, "")
 }
 
-// IsExtensible :
-// Determine whether it is permitted to add additional properties to this object.
-// https://tc39.es/ecma262/#table-essential-internal-methods
-// https://tc39.es/ecma262/#sec-isextensible-o
-func IsExtensible(target *ECMAObject) *CompletionRecord {
-	// INVARIANTS---
-	return NewCompletionRecord(NormalCompletion, target.InternalSlots.Extensible, "")
-	// ---INVARIANTS
-}
-
 // PreventExtensions :
 // Control whether new properties may be added to this object.
 // Returns true if the operation was successful or false if the operation was unsuccessful.
