@@ -1,3 +1,3 @@
-# duck
+# ling
 
-duck is a JS interpreter written in golang.
+ling is a JS interpreter written in golang.
