@@ -15,37 +15,37 @@ const (
 // where each field's name is an attribute name and its value is a corresponding attribute value.
 // https://tc39.es/ecma262/#sec-property-descriptor-specification-type
 type PropertyDescriptor struct {
-	*ECMARecord
-	_type PropertyDescriptorType
+	Type  PropertyDescriptorType
+	Value interface{}
 }
 
 // NewPropertyDescriptor :
 // Creates a new property descriptor.
 func NewPropertyDescriptor(_type PropertyDescriptorType, value interface{}) *PropertyDescriptor {
 	return &PropertyDescriptor{
-		ECMARecord: NewECMARecord(value),
-		_type:      _type,
+		Type:  _type,
+		Value: value,
 	}
 }
 
 func NewDataPropertyDescriptor(value *DataProperty) *PropertyDescriptor {
 	return &PropertyDescriptor{
-		ECMARecord: NewECMARecord(value),
-		_type:      DataPropertyDescriptor,
+		Type:  DataPropertyDescriptor,
+		Value: value,
 	}
 }
 
 func NewAccessorPropertyDescriptor(value *AccessorProperty) *PropertyDescriptor {
 	return &PropertyDescriptor{
-		ECMARecord: NewECMARecord(value),
-		_type:      AccessorPropertyDescriptor,
+		Type:  AccessorPropertyDescriptor,
+		Value: value,
 	}
 }
 
 func NewMethodPropertyDescriptor(value *MethodProperty) *PropertyDescriptor {
 	return &PropertyDescriptor{
-		ECMARecord: NewECMARecord(value),
-		_type:      MethodPropertyDescriptor,
+		Type:  MethodPropertyDescriptor,
+		Value: value,
 	}
 }
 
@@ -61,27 +61,27 @@ func FromObject(obj *ECMAObject) *PropertyDescriptor {
 // Checks if this descriptor is an access descriptor.
 // https://tc39.es/ecma262/#sec-isaccessordescriptor
 func (d *PropertyDescriptor) IsAccessor() bool {
-	return d._type == AccessorPropertyDescriptor
+	return d.Type == AccessorPropertyDescriptor
 }
 
 // IsData :
 // Checks if this descriptor is a data descriptor.
 // https://tc39.es/ecma262/#sec-isdatadescriptor
 func (d *PropertyDescriptor) IsData() bool {
-	return d._type == DataPropertyDescriptor
+	return d.Type == DataPropertyDescriptor
 }
 
 // IsGeneric :
 // Checks if this descriptor is a generic descriptor.
 // https://tc39.es/ecma262/#sec-isgenericdescriptor
 func (d *PropertyDescriptor) IsGeneric() bool {
-	return d._type == GenericPropertyDescriptor
+	return d.Type == GenericPropertyDescriptor
 }
 
 // IsMethod :
 // Checks if this descriptor is a method descriptor.
 func (d *PropertyDescriptor) IsMethod() bool {
-	return d._type == MethodPropertyDescriptor
+	return d.Type == MethodPropertyDescriptor
 }
 
 // ToObject :
