@@ -37,6 +37,13 @@ func CopyCompletionRecord(other *CompletionRecord) *CompletionRecord {
 	return NewCompletionRecord(other.Type, other.Value, other.Target)
 }
 
+// Await :
+// https://tc39.es/ecma262/#await
+// TODO
+func Await(value interface{}) *CompletionRecord {
+	return nil
+}
+
 // UpdateEmpty :
 // Return a copy of a completion record with an updated value if not a return or throw type.
 // https://tc39.es/ecma262/#sec-updateempty
