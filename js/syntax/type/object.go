@@ -123,7 +123,7 @@ type ECMAObject struct {
 	InternalMethods    map[string]*MethodProperty
 	// https://tc39.es/ecma262/#sec-object-internal-methods-and-internal-slots
 	InternalSlots struct {
-		PrivateElements []*PrivateElementRecord
+		PrivateElements []*PrivateElement
 		Prototype       *ECMAObject
 		Extensible      bool
 	}
@@ -167,7 +167,7 @@ func (p *ECMAObject) IsNonExtensible() (bool, error) {
 	// First check if IsExtensible returns false
 	isExtensible, ok := p.InternalMethods["IsExtensible"].Value.(func(*ECMAObject) *CompletionRecord)
 	if ok {
-		if r, ok := isExtensible(p).GetValue().(bool); ok && !r {
+		if r, ok := isExtensible(p).Value.(bool); ok && !r {
 			return true, nil
 		}
 		err = errors.New("object does not have valid internal method IsExtensible")
@@ -176,7 +176,7 @@ func (p *ECMAObject) IsNonExtensible() (bool, error) {
 	// Now check if PreventExtensions returns true
 	preventExtensions, ok := p.InternalMethods["PreventExtensions"].Value.(func(*ECMAObject) *CompletionRecord)
 	if ok {
-		if r, ok := preventExtensions(p).GetValue().(bool); ok && r {
+		if r, ok := preventExtensions(p).Value.(bool); ok && r {
 			return true, nil
 		}
 		err = errors.New("object does not have valid internal method PreventExtensions")
@@ -215,7 +215,7 @@ func SetPrototypeOf(target *ECMAObject, v *ECMAObject) *CompletionRecord {
 			r := getPrototypeOf(target)
 			return NewCompletionRecord(
 				NormalCompletion,
-				reflect.ValueOf(r.GetValue()).Type() == reflect.ValueOf(v).Type(),
+				reflect.ValueOf(r.Value).Type() == reflect.ValueOf(v).Type(),
 				"",
 			)
 		}
@@ -295,7 +295,7 @@ func DefineOwnProperty(target *ECMAObject, propertyKey string, propertyDescripto
 		}
 
 		// Check if all attributes of prop are same as propertyDescriptor's
-		if attr, ok := propertyDescriptor.GetValue().(*DataProperty); ok {
+		if attr, ok := propertyDescriptor.Value.(*DataProperty); ok {
 			if attr.Attributes == prop.Attributes {
 				return NewCompletionRecord(NormalCompletion, true, "")
 			}
@@ -311,7 +311,7 @@ func DefineOwnProperty(target *ECMAObject, propertyKey string, propertyDescripto
 	// Check if propertyKey is an accessor property
 	if prop, ok := target.AccessorProperties[propertyKey]; ok {
 		// Check if all attributes of prop are same as propertyDescriptor's
-		if attr, ok := propertyDescriptor.GetValue().(*AccessorProperty); ok {
+		if attr, ok := propertyDescriptor.Value.(*AccessorProperty); ok {
 			if attr.Attributes == prop.Attributes {
 				return NewCompletionRecord(NormalCompletion, true, "")
 			}
