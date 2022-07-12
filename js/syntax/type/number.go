@@ -10,9 +10,9 @@ type ECMANumber struct {
 
 // NewPrimitiveNumber :
 // Create a new primitive number.
-func NewPrimitiveNumber(value interface{}) *ECMANumber {
+func NewPrimitiveNumber(identifier string, value interface{}) *ECMANumber {
 	return &ECMANumber{
-		ECMAPrimitive: NewPrimitive(value),
+		ECMAPrimitive: NewPrimitive3(NumberType_, identifier, value),
 	}
 }
 

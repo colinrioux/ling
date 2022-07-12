@@ -10,9 +10,9 @@ type ECMABigInt struct {
 
 // NewPrimitiveBigInt :
 // Create a new primitive number.
-func NewPrimitiveBigInt(value interface{}) *ECMABigInt {
+func NewPrimitiveBigInt(identifier string, value interface{}) *ECMABigInt {
 	return &ECMABigInt{
-		ECMAPrimitive: NewPrimitive(value),
+		ECMAPrimitive: NewPrimitive3(BigIntType_, identifier, value),
 	}
 }
 

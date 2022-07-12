@@ -10,7 +10,7 @@ type ECMAUndefined struct {
 // Create a new primitive undefined.
 func NewPrimitiveUndefined() *ECMAUndefined {
 	return &ECMAUndefined{
-		ECMAPrimitive: NewPrimitive(nil),
+		ECMAPrimitive: NewPrimitive3(UndefinedType_, "undefined", nil),
 	}
 }
 

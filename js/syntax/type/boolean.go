@@ -8,9 +8,9 @@ type ECMABoolean struct {
 
 // NewPrimitiveBoolean :
 // Create a new primitive boolean.
-func NewPrimitiveBoolean(value interface{}) *ECMABoolean {
+func NewPrimitiveBoolean(identifier string, value interface{}) *ECMABoolean {
 	return &ECMABoolean{
-		ECMAPrimitive: NewPrimitive(value),
+		ECMAPrimitive: NewPrimitive3(BooleanType_, identifier, value),
 	}
 }
 

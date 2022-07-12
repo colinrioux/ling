@@ -10,9 +10,9 @@ type ECMASymbol struct {
 
 // NewPrimitiveSymbol :
 // Create a new primitive symbol.
-func NewPrimitiveSymbol(value interface{}) *ECMASymbol {
+func NewPrimitiveSymbol(identifier string, value interface{}) *ECMASymbol {
 	return &ECMASymbol{
-		ECMAPrimitive: NewPrimitive(value),
+		ECMAPrimitive: NewPrimitive3(SymbolType_, identifier, value),
 	}
 }
 

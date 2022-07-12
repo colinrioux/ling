@@ -10,7 +10,7 @@ type ECMANull struct {
 // Create a new primitive null.
 func NewPrimitiveNull() *ECMANull {
 	return &ECMANull{
-		ECMAPrimitive: NewPrimitive(nil),
+		ECMAPrimitive: NewPrimitive3(NullType_, "null", nil),
 	}
 }
 

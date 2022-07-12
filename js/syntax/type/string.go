@@ -8,9 +8,9 @@ type ECMAString struct {
 
 // NewPrimitiveString :
 // Create a new primitive string.
-func NewPrimitiveString(value interface{}) *ECMAString {
+func NewPrimitiveString(identifier string, value interface{}) *ECMAString {
 	return &ECMAString{
-		ECMAPrimitive: NewPrimitive(value),
+		ECMAPrimitive: NewPrimitive3(StringType_, identifier, value),
 	}
 }
 
