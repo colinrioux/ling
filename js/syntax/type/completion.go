@@ -16,25 +16,36 @@ const (
 // that perform nonlocal transfers of control.
 // https://tc39.es/ecma262/#sec-completion-record-specification-type
 type CompletionRecord struct {
-	*ECMARecord
-	_type  CompletionType
-	target string
+	Type   CompletionType
+	Value  interface{}
+	Target string
 }
 
 // NewCompletionRecord :
 // Create a new completion record.
 func NewCompletionRecord(_type CompletionType, value interface{}, target string) *CompletionRecord {
 	return &CompletionRecord{
-		ECMARecord: NewECMARecord(value),
-		_type:      _type,
-		target:     target,
+		Type:   _type,
+		Value:  value,
+		Target: target,
 	}
 }
 
-func (r *CompletionRecord) GetType() CompletionType {
-	return r._type
+// CopyCompletionRecord :
+// Create a new completion record as a copy of another one.
+func CopyCompletionRecord(other *CompletionRecord) *CompletionRecord {
+	return NewCompletionRecord(other.Type, other.Value, other.Target)
 }
 
-func (r *CompletionRecord) GetTarget() string {
-	return r.target
+// UpdateEmpty :
+// Return a copy of a completion record with an updated value if not a return or throw type.
+// https://tc39.es/ecma262/#sec-updateempty
+func UpdateEmpty(completionRecord *CompletionRecord, value interface{}) *CompletionRecord {
+	var record *CompletionRecord = CopyCompletionRecord(completionRecord)
+	if record.Type == ReturnCompletion || record.Type == ThrowCompletion {
+		return completionRecord
+	}
+
+	record.Value = value
+	return record
 }
