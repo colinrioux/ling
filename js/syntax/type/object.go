@@ -150,6 +150,16 @@ func NewECMAObject(identifier string) *ECMAObject {
 	}
 }
 
+// NewBasicECMAObject :
+// Create a new basic ECMAObject.
+// https://tc39.es/ecma262/#sec-makebasicobject
+func NewBasicECMAObject(identifier string, slots ...interface{}) *ECMAObject {
+	var obj *ECMAObject = NewECMAObject(identifier)
+	obj.InternalSlots.Prototype = slots[0].(*ECMAObject)
+	obj.InternalSlots.Extensible = slots[1].(bool)
+	return obj
+}
+
 // ToBool :
 // Convert this primitive into a boolean value.
 // https://developer.mozilla.org/en-US/docs/Glossary/Falsy
