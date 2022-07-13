@@ -1,7 +1,7 @@
 package node
 
 import (
-	"duck/ling/js/ast/token"
+	"duck/ling/js/lexer/token"
 	"fmt"
 )
 

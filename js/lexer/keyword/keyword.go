@@ -1,6 +1,8 @@
 package keyword
 
-import "duck/ling/js/ast/token"
+import (
+	"duck/ling/js/lexer/token"
+)
 
 type ReservedKeyword string
 

@@ -1,7 +1,7 @@
 package node
 
 import (
-	"duck/ling/js/ast/token"
+	"duck/ling/js/lexer/token"
 	"fmt"
 )
 
@@ -25,11 +25,11 @@ func (node BinaryOperatorNode) GetOperator() *token.Token {
 }
 
 func (node BinaryOperatorNode) Visit() any {
-	if node.operator.GetType() == token.ADD {
+	if node.operator.Type == token.ADD {
 		return ((*node.GetLeft()).Visit()).(int) + ((*node.GetRight()).Visit()).(int)
-	} else if node.operator.GetType() == token.SUB {
+	} else if node.operator.Type == token.SUB {
 		return ((*node.GetLeft()).Visit()).(int) - ((*node.GetRight()).Visit()).(int)
-	} else if node.operator.GetType() == token.MUL {
+	} else if node.operator.Type == token.MUL {
 		return ((*node.GetLeft()).Visit()).(int) * ((*node.GetRight()).Visit()).(int)
 	}
 	// DIV
@@ -66,7 +66,7 @@ func (node UnaryOperatorNode) GetExpression() *IASTNode {
 }
 
 func (node UnaryOperatorNode) Visit() any {
-	op := node.operator.GetType()
+	op := node.operator.Type
 	if op == token.ADD {
 		return +((*node.GetExpression()).Visit()).(int)
 	}

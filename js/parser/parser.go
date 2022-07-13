@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"duck/ling/js/ast/node"
-	"duck/ling/js/ast/token"
+	"duck/ling/js/lexer/token"
+	"duck/ling/js/parser/ast/node"
 	"duck/ling/js/syntax/literal"
 	"duck/ling/js/syntax/unicode"
 	"fmt"
@@ -51,12 +51,12 @@ func GetNextToken() *token.Token {
 
 		if CurrentChar == '=' {
 			Advance()
-			return token.NewToken(token.ASSIGN, '=')
+			return token.NewToken(token.ASSIGN, "=")
 		}
 
 		if CurrentChar == ';' {
 			Advance()
-			return token.NewToken(token.SEMICOLON, ';')
+			return token.NewToken(token.SEMICOLON, ";")
 		}
 
 		if literal.IsDecimalDigit(CurrentChar) || CurrentChar == '.' {
@@ -65,39 +65,39 @@ func GetNextToken() *token.Token {
 
 		if CurrentChar == '+' {
 			Advance()
-			return token.NewToken(token.ADD, '+')
+			return token.NewToken(token.ADD, "+")
 		}
 
 		if CurrentChar == '-' {
 			Advance()
-			return token.NewToken(token.SUB, '-')
+			return token.NewToken(token.SUB, "-")
 		}
 
 		if CurrentChar == '*' {
 			Advance()
-			return token.NewToken(token.MUL, '*')
+			return token.NewToken(token.MUL, "*")
 		}
 
 		if CurrentChar == '/' {
 			Advance()
-			return token.NewToken(token.DIV, '/')
+			return token.NewToken(token.DIV, "/")
 		}
 
 		if CurrentChar == '(' {
 			Advance()
-			return token.NewToken(token.LPAREN, '(')
+			return token.NewToken(token.LPAREN, "(")
 		}
 
 		if CurrentChar == ')' {
 			Advance()
-			return token.NewToken(token.RPAREN, ')')
+			return token.NewToken(token.RPAREN, ")")
 		}
 	}
 	return token.NewToken(token.EOF, 0)
 }
 
 func eat(tokenType token.Type) {
-	if tokenType == CurrentToken.GetType() {
+	if tokenType == CurrentToken.Type {
 		CurrentToken = GetNextToken()
 	}
 }
@@ -114,20 +114,20 @@ func Advance() {
 func Factor() *node.IASTNode {
 	tok := CurrentToken
 	var nde node.IASTNode
-	if tok.GetType() == token.ADD {
+	if tok.Type == token.ADD {
 		eat(token.ADD)
 		nde = node.NewUnaryOperatorNode(nil, nil, tok, Factor())
 		return &nde
-	} else if tok.GetType() == token.SUB {
+	} else if tok.Type == token.SUB {
 		eat(token.SUB)
 		nde = node.NewUnaryOperatorNode(nil, nil, tok, Factor())
 		return &nde
-	} else if tok.GetType() == token.LPAREN {
+	} else if tok.Type == token.LPAREN {
 		eat(token.LPAREN)
 		nde := Expr()
 		eat(token.RPAREN)
 		return nde
-	} else if tok.GetType() == token.NUMBER {
+	} else if tok.Type == token.NUMBER {
 		eat(token.NUMBER)
 		nde = node.NewNumberNode(tok)
 		return &nde
@@ -138,11 +138,11 @@ func Factor() *node.IASTNode {
 
 func Term() *node.IASTNode {
 	var nde *node.IASTNode = Factor()
-	for CurrentToken.GetType() == token.MUL || CurrentToken.GetType() == token.DIV {
+	for CurrentToken.Type == token.MUL || CurrentToken.Type == token.DIV {
 		tok := CurrentToken
-		if CurrentToken.GetType() == token.MUL {
+		if CurrentToken.Type == token.MUL {
 			eat(token.MUL)
-		} else if CurrentToken.GetType() == token.DIV {
+		} else if CurrentToken.Type == token.DIV {
 			eat(token.DIV)
 		}
 		var tmp node.IASTNode = node.NewBinaryOperatorNode(nde, Term(), tok)
@@ -153,11 +153,11 @@ func Term() *node.IASTNode {
 
 func Expr() *node.IASTNode {
 	var nde *node.IASTNode = Term()
-	for CurrentToken.GetType() == token.ADD || CurrentToken.GetType() == token.SUB {
+	for CurrentToken.Type == token.ADD || CurrentToken.Type == token.SUB {
 		tok := CurrentToken
-		if tok.GetType() == token.ADD {
+		if tok.Type == token.ADD {
 			eat(token.ADD)
-		} else if tok.GetType() == token.SUB {
+		} else if tok.Type == token.SUB {
 			eat(token.SUB)
 		}
 		var tmp node.IASTNode = node.NewBinaryOperatorNode(nde, Term(), tok)

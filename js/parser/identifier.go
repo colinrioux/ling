@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"duck/ling/js/ast/keyword"
-	"duck/ling/js/ast/token"
+	"duck/ling/js/lexer/keyword"
+	"duck/ling/js/lexer/token"
 	"duck/ling/js/syntax/literal"
 )
 
