@@ -20,7 +20,7 @@ func ParseNumber() *_type.ECMANumber {
 		Advance()
 	}
 	resI, _ := strconv.ParseFloat(res, 64)
-	resN := _type.NewECMANumber1(resI)
+	resN := _type.NewPrimitiveNumber("", resI)
 
 	return resN
 }

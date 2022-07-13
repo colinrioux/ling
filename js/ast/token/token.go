@@ -4,33 +4,23 @@ import "fmt"
 
 type IToken interface {
 	String() string
-	GetType() Type
-	GetValue() any
 }
 
 type Token struct {
-	_type Type
-	value interface{}
+	Type  Type
+	Value interface{}
 }
 
 func (tok Token) String() string {
-	return fmt.Sprintf("Token(%s, %v)", tok._type, tok.value)
-}
-
-func (tok Token) GetType() Type {
-	return tok._type
-}
-
-func (tok Token) GetValue() any {
-	return tok.value
+	return fmt.Sprintf("Token(%s, %v)", tok.Type, tok.Value)
 }
 
 func NewToken(_type Type, value interface{}) *Token {
-	return &Token{_type: _type, value: value}
+	return &Token{Type: _type, Value: value}
 }
 
 func ValueToInt(tok *Token) int {
-	res, _ := tok.GetValue().(int)
+	res, _ := tok.Value.(int)
 	return res
 }
 

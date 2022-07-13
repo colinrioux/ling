@@ -1,11 +1,9 @@
 package parser
 
 import (
-	"duck/ling/js/ast/keyword"
 	"duck/ling/js/ast/node"
 	"duck/ling/js/ast/token"
 	"duck/ling/js/syntax/literal"
-	_type "duck/ling/js/syntax/type"
 	"duck/ling/js/syntax/unicode"
 	"fmt"
 	"strconv"
@@ -40,21 +38,6 @@ func GetInt() int {
 	return resI
 }
 
-func Id() *token.Token {
-	result := ""
-	for CurrentChar != 0 && literal.IsAlphaNumeric(CurrentChar) {
-		result += string(CurrentChar)
-		Advance()
-	}
-
-	ok, tok := keyword.IsKeyword(result)
-	if !ok {
-		v := _type.NewValue(result)
-		tok = v.Token()
-	}
-	return tok
-}
-
 func GetNextToken() *token.Token {
 	for CurrentChar != 0 {
 		if unicode.IsWhitespace(CurrentChar) {
@@ -63,7 +46,7 @@ func GetNextToken() *token.Token {
 		}
 
 		if literal.IsAlpha(CurrentChar) || CurrentChar == '_' {
-			return Id()
+			return ParseIdentifier()
 		}
 
 		if CurrentChar == '=' {

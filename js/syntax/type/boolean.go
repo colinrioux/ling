@@ -19,7 +19,7 @@ func NewPrimitiveBoolean(identifier string, value interface{}) *ECMABoolean {
 // https://developer.mozilla.org/en-US/docs/Glossary/Falsy
 // https://developer.mozilla.org/en-US/docs/Glossary/Truthy
 func (p *ECMABoolean) ToBool() (bool, error) {
-	return p.ECMAPrimitive.GetValue().(bool), nil
+	return p.ECMAPrimitive.Value.(bool), nil
 }
 
 type ECMABooleanObject struct {

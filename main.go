@@ -6,23 +6,7 @@ import (
 )
 
 func main() {
-	//t := [...]int{1, 2, 3}
-	//s1 := make(_type.ECMASet, len(t))
-	//for i, v := range t {
-	//	s1[i] = v
-	//}
-	//t = [...]int{4, 5, 6}
-	//s2 := make(_type.ECMASet, len(t))
-	//for i, v := range t {
-	//	s2[i] = v
-	//}
-	////fmt.Println(s1)
-	////fmt.Println(s2)
-	//rel := _type.NewRelation(&s1, &s1)
-	//if rel.I() != nil {
-	//	fmt.Println(rel.I().GetGraph())
-	//}
-	parser.Text = "1.7976931348623157e+308"
+	parser.Text = "var x = \"hi\""
 	fmt.Println(parser.Text)
 	parser.CurrentChar = rune(parser.Text[parser.Pos])
 	parser.CurrentToken = parser.GetNextToken()

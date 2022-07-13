@@ -5,7 +5,7 @@ package _type
 // https://tc39.es/ecma262/#sec-requireobjectcoercible
 // TODO
 func RequireObjectCoercible(argument *ECMAPrimitive) *CompletionRecord {
-	if argument.GetType() != UndefinedType_ && argument.GetType() != NullType_ {
+	if argument.Type != UndefinedType_ && argument.Type != NullType_ {
 		return NewCompletionRecord(NormalCompletion, argument, "")
 	}
 	// TODO throw a TypeError for null/undefined
@@ -85,15 +85,15 @@ func IsStringWellFormedUnicode(str string) (bool, error) {
 // https://tc39.es/ecma262/#sec-samevalue
 // TODO
 func SameValue(x *ECMAPrimitive, y *ECMAPrimitive) (bool, error) {
-	if x.GetType() != y.GetType() {
+	if x.Type != y.Type {
 		return false, nil
 	}
-	if x.GetType() == NumberType_ {
+	if x.Type == NumberType_ {
 		// TODO
 		return false, nil
 	}
 
-	if x.GetType() == BigIntType_ {
+	if x.Type == BigIntType_ {
 		// TODO
 		return false, nil
 	}
@@ -105,15 +105,15 @@ func SameValue(x *ECMAPrimitive, y *ECMAPrimitive) (bool, error) {
 // https://tc39.es/ecma262/#sec-samevaluezero
 // TODO
 func SameValueZero(x *ECMAPrimitive, y *ECMAPrimitive) (bool, error) {
-	if x.GetType() != y.GetType() {
+	if x.Type != y.Type {
 		return false, nil
 	}
-	if x.GetType() == NumberType_ {
+	if x.Type == NumberType_ {
 		// TODO
 		return false, nil
 	}
 
-	if x.GetType() == BigIntType_ {
+	if x.Type == BigIntType_ {
 		// TODO
 		return false, nil
 	}
@@ -126,23 +126,23 @@ func SameValueZero(x *ECMAPrimitive, y *ECMAPrimitive) (bool, error) {
 // TODO
 func SameValueNonNumeric(x *ECMAPrimitive, y *ECMAPrimitive) (bool, error) {
 	// handle undefined & null types
-	if x.GetType() == UndefinedType_ || x.GetType() == NullType_ {
+	if x.Type == UndefinedType_ || x.Type == NullType_ {
 		return true, nil
 	}
 
 	// handle string type
-	if x.GetType() == StringType_ {
+	if x.Type == StringType_ {
 		// TODO : does go string allow ecma like strings
-		return x.GetValue().(string) == y.GetValue().(string), nil
+		return x.Value.(string) == y.Value.(string), nil
 	}
 
 	// handle boolean type
-	if x.GetType() == BooleanType_ {
-		return x.GetValue().(bool) == y.GetValue().(bool), nil
+	if x.Type == BooleanType_ {
+		return x.Value.(bool) == y.Value.(bool), nil
 	}
 
 	// handle symbol type
-	if x.GetType() == SymbolType_ {
+	if x.Type == SymbolType_ {
 		// TODO
 		return false, nil
 	}

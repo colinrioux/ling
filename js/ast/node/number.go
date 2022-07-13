@@ -7,27 +7,22 @@ import (
 
 type INumberNode interface {
 	IASTNode
-	GetValue() any
 }
 
 type NumberNode struct {
 	*ASTNode
-	value any
+	Value interface{}
 }
 
 func NewNumberNode(token *token.Token) *NumberNode {
 	base := NewASTNode(nil, nil, token)
-	return &NumberNode{ASTNode: base, value: token.GetValue()}
-}
-
-func (node NumberNode) GetValue() any {
-	return node.value
+	return &NumberNode{ASTNode: base, Value: token.Value}
 }
 
 func (node NumberNode) String() string {
-	return fmt.Sprintf("NumberNode(%v,%s)", node.ASTNode, node.value)
+	return fmt.Sprintf("NumberNode(%v,%s)", node.ASTNode, node.Value)
 }
 
-func (node NumberNode) Visit() any {
-	return node.value
+func (node NumberNode) Visit() interface{} {
+	return node.Value
 }

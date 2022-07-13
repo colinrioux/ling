@@ -14,16 +14,16 @@ type IECMAPrimitive interface {
 // ECMAPrimitive :
 // Base primitive type that all other primitives inherit from.
 type ECMAPrimitive struct {
-	_type      ECMAPrimitiveType // the _type for such a primitive
-	identifier string            // the variable identifier
-	value      interface{}       // value held by the identifier
+	Type       ECMAPrimitiveType // the _type for such a primitive
+	Identifier string            // the variable identifier
+	Value      interface{}       // value held by the identifier
 }
 
 // NewPrimitive1 :
 // Create a new base primitive type with a name.
 func NewPrimitive1(identifier string) *ECMAPrimitive {
 	return &ECMAPrimitive{
-		identifier: identifier,
+		Identifier: identifier,
 	}
 }
 
@@ -31,8 +31,8 @@ func NewPrimitive1(identifier string) *ECMAPrimitive {
 // Create a new base primitive type with an identifier and value.
 func NewPrimitive2(identifier string, value interface{}) *ECMAPrimitive {
 	return &ECMAPrimitive{
-		identifier: identifier,
-		value:      value,
+		Identifier: identifier,
+		Value:      value,
 	}
 }
 
@@ -40,28 +40,10 @@ func NewPrimitive2(identifier string, value interface{}) *ECMAPrimitive {
 // Create a new base primitive type with a type, identifier, and value.
 func NewPrimitive3(_type ECMAPrimitiveType, identifier string, value interface{}) *ECMAPrimitive {
 	return &ECMAPrimitive{
-		_type:      _type,
-		identifier: identifier,
-		value:      value,
+		Type:       _type,
+		Identifier: identifier,
+		Value:      value,
 	}
-}
-
-// GetType :
-// Get the type for this primitive
-func (p *ECMAPrimitive) GetType() ECMAPrimitiveType {
-	return p._type
-}
-
-// GetIdentifier :
-// Get the identifier for this primitive.
-func (p *ECMAPrimitive) GetIdentifier() string {
-	return p.identifier
-}
-
-// GetValue :
-// Get the value associated with this primitive, if there is one.
-func (p *ECMAPrimitive) GetValue() interface{} {
-	return p.value
 }
 
 // ToBool :

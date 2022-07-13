@@ -21,6 +21,6 @@ func NewPrimitiveBigInt(identifier string, value interface{}) *ECMABigInt {
 // https://developer.mozilla.org/en-US/docs/Glossary/Falsy
 // https://developer.mozilla.org/en-US/docs/Glossary/Truthy
 func (p *ECMABigInt) ToBool() (bool, error) {
-	v := p.ECMAPrimitive.GetValue().(float64)
+	v := p.ECMAPrimitive.Value.(float64)
 	return v != 0 && !math.IsNaN(v), nil
 }
