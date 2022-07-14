@@ -1,6 +1,9 @@
 package _type
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 // ECMANumber
 // Primitive ECMA number.
@@ -14,6 +17,10 @@ func NewPrimitiveNumber(identifier string, value interface{}) *ECMANumber {
 	return &ECMANumber{
 		ECMAPrimitive: NewPrimitive3(NumberType_, identifier, value),
 	}
+}
+
+func (p *ECMANumber) String() string {
+	return fmt.Sprintf("%v", p.ECMAPrimitive.Value)
 }
 
 // ToBool :

@@ -111,17 +111,14 @@ func Advance() {
 	}
 }
 
-func Factor() *node.IASTNode {
+func Factor() *node.ASTNode {
 	tok := CurrentToken
-	var nde node.IASTNode
 	if tok.Type == token.ADD {
 		eat(token.ADD)
-		nde = node.NewUnaryOperatorNode(nil, nil, tok, Factor())
-		return &nde
+		return (*node.ASTNode)(node.NewUnaryOperatorNode(tok, Factor()))
 	} else if tok.Type == token.SUB {
 		eat(token.SUB)
-		nde = node.NewUnaryOperatorNode(nil, nil, tok, Factor())
-		return &nde
+		return (*node.ASTNode)(node.NewUnaryOperatorNode(tok, Factor()))
 	} else if tok.Type == token.LPAREN {
 		eat(token.LPAREN)
 		nde := Expr()
@@ -129,15 +126,13 @@ func Factor() *node.IASTNode {
 		return nde
 	} else if tok.Type == token.NUMBER {
 		eat(token.NUMBER)
-		nde = node.NewNumberNode(tok)
-		return &nde
+		return (*node.ASTNode)(node.NewNumberNode(tok))
 	}
-	nde = node.NewASTNode(nil, nil, tok)
-	return &nde
+	return node.NewASTNode(nil, nil, tok)
 }
 
-func Term() *node.IASTNode {
-	var nde *node.IASTNode = Factor()
+func Term() *node.ASTNode {
+	var nde = Factor()
 	for CurrentToken.Type == token.MUL || CurrentToken.Type == token.DIV {
 		tok := CurrentToken
 		if CurrentToken.Type == token.MUL {
@@ -145,14 +140,13 @@ func Term() *node.IASTNode {
 		} else if CurrentToken.Type == token.DIV {
 			eat(token.DIV)
 		}
-		var tmp node.IASTNode = node.NewBinaryOperatorNode(nde, Term(), tok)
-		nde = &tmp
+		nde = (*node.ASTNode)(node.NewBinaryOperatorNode(nde, Term(), tok))
 	}
 	return nde
 }
 
-func Expr() *node.IASTNode {
-	var nde *node.IASTNode = Term()
+func Expr() *node.ASTNode {
+	var nde = Term()
 	for CurrentToken.Type == token.ADD || CurrentToken.Type == token.SUB {
 		tok := CurrentToken
 		if tok.Type == token.ADD {
@@ -160,18 +154,17 @@ func Expr() *node.IASTNode {
 		} else if tok.Type == token.SUB {
 			eat(token.SUB)
 		}
-		var tmp node.IASTNode = node.NewBinaryOperatorNode(nde, Term(), tok)
-		nde = &tmp
+		nde = (*node.ASTNode)(node.NewBinaryOperatorNode(nde, Term(), tok))
 	}
 
 	return nde
 }
 
-func Visit(root *node.IASTNode) {
+func Visit(root *node.ASTNode) {
 	if root == nil {
 		return
 	}
-	Visit((*root).GetLeft())
-	Visit((*root).GetRight())
-	fmt.Println((*root).GetToken())
+	Visit((*root).Left)
+	Visit((*root).Right)
+	fmt.Println((*root).Token)
 }

@@ -2,27 +2,25 @@ package node
 
 import (
 	"duck/ling/js/lexer/token"
+	_type "duck/ling/js/syntax/type"
 	"fmt"
 )
 
-type INumberNode interface {
-	IASTNode
-}
+type NumberNode ASTNode
 
-type NumberNode struct {
-	*ASTNode
-	Value interface{}
-}
-
-func NewNumberNode(token *token.Token) *NumberNode {
-	base := NewASTNode(nil, nil, token)
-	return &NumberNode{ASTNode: base, Value: token.Value}
+func NewNumberNode(value *token.Token) *NumberNode {
+	return &NumberNode{
+		Type:  NumberNodeType,
+		Left:  nil,
+		Right: nil,
+		Token: value,
+	}
 }
 
 func (node NumberNode) String() string {
-	return fmt.Sprintf("NumberNode(%v,%s)", node.ASTNode, node.Value)
+	return fmt.Sprintf("NumberNode(%v)", *node.Token)
 }
 
 func (node NumberNode) Visit() interface{} {
-	return node.Value
+	return node.Token.Value.(*_type.ECMANumber).Value
 }

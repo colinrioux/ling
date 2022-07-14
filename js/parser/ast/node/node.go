@@ -5,39 +5,43 @@ import (
 	"fmt"
 )
 
-type IASTNode interface {
-	GetToken() *token.Token
-	GetLeft() *IASTNode
-	GetRight() *IASTNode
-	Visit() any
-}
-
 type ASTNode struct {
-	left  *IASTNode
-	right *IASTNode
-	token *token.Token
+	Type  ASTNodeType
+	Left  *ASTNode
+	Right *ASTNode
+	Token *token.Token
 }
 
-func NewASTNode(left *IASTNode, right *IASTNode, token *token.Token) *ASTNode {
-	return &ASTNode{left: left, right: right, token: token}
+func NewASTNode(left *ASTNode, right *ASTNode, token *token.Token) *ASTNode {
+	return &ASTNode{
+		Type:  UnknownNodeType,
+		Left:  left,
+		Right: right,
+		Token: token,
+	}
 }
 
-func (node ASTNode) GetToken() *token.Token {
-	return node.token
-}
-
-func (node ASTNode) GetLeft() *IASTNode {
-	return node.left
-}
-
-func (node ASTNode) GetRight() *IASTNode {
-	return node.right
-}
-
-func (node ASTNode) Visit() any {
+func (node *ASTNode) Visit() interface{} {
+	switch node.Type {
+	case NumberNodeType:
+		return (*NumberNode)(node).Visit()
+	case BinaryOperatorNodeType:
+		return (*BinaryOperatorNode)(node).Visit()
+	case UnaryOperatorNodeType:
+		return (*UnaryOperatorNode)(node).Visit()
+	}
 	return nil
 }
 
-func (node ASTNode) String() string {
-	return fmt.Sprintf("ASTNode(%v,%v,%s)", node.left, node.right, *node.token)
+func (node *ASTNode) String() string {
+	return fmt.Sprintf("ASTNode(%v,%v,%s)", node.Left, node.Right, *node.Token)
 }
+
+type ASTNodeType uint16
+
+const (
+	UnknownNodeType ASTNodeType = iota
+	NumberNodeType
+	BinaryOperatorNodeType
+	UnaryOperatorNodeType
+)

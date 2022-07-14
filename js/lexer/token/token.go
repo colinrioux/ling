@@ -2,10 +2,6 @@ package token
 
 import "fmt"
 
-type IToken interface {
-	String() string
-}
-
 type Token struct {
 	Type  Type
 	Value interface{}
@@ -24,7 +20,7 @@ func ValueToInt(tok *Token) int {
 	return res
 }
 
-type Type uint32
+type Type uint16
 
 const (
 	ILLEGAL Type = iota
