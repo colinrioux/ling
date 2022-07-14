@@ -2,17 +2,17 @@ package parser
 
 import (
 	"duck/ling/lexer/token"
-	node2 "duck/ling/parser/ast/node"
+	"duck/ling/parser/ast"
 )
 
-func Factor() *node2.ASTNode {
+func Factor() *ast.ASTNode {
 	tok := CurrentToken
 	if tok.Type == token.ADD {
 		eat(token.ADD)
-		return (*node2.ASTNode)(node2.NewUnaryOperatorNode(tok, Factor()))
+		return (*ast.ASTNode)(ast.NewUnaryOperatorNode(tok, Factor()))
 	} else if tok.Type == token.SUB {
 		eat(token.SUB)
-		return (*node2.ASTNode)(node2.NewUnaryOperatorNode(tok, Factor()))
+		return (*ast.ASTNode)(ast.NewUnaryOperatorNode(tok, Factor()))
 	} else if tok.Type == token.LPAREN {
 		eat(token.LPAREN)
 		nde := Expr()
@@ -20,12 +20,12 @@ func Factor() *node2.ASTNode {
 		return nde
 	} else if tok.Type == token.NUMBER {
 		eat(token.NUMBER)
-		return (*node2.ASTNode)(node2.NewNumberNode(tok))
+		return (*ast.ASTNode)(ast.NewNumberNode(tok))
 	}
-	return node2.NewASTNode(nil, nil, tok)
+	return ast.NewASTNode(nil, nil, tok)
 }
 
-func Term() *node2.ASTNode {
+func Term() *ast.ASTNode {
 	var nde = Factor()
 	for CurrentToken.Type == token.MUL || CurrentToken.Type == token.DIV {
 		tok := CurrentToken
@@ -34,12 +34,12 @@ func Term() *node2.ASTNode {
 		} else if CurrentToken.Type == token.DIV {
 			eat(token.DIV)
 		}
-		nde = (*node2.ASTNode)(node2.NewBinaryOperatorNode(nde, Term(), tok))
+		nde = (*ast.ASTNode)(ast.NewBinaryOperatorNode(nde, Term(), tok))
 	}
 	return nde
 }
 
-func Expr() *node2.ASTNode {
+func Expr() *ast.ASTNode {
 	var nde = Term()
 	for CurrentToken.Type == token.ADD || CurrentToken.Type == token.SUB {
 		tok := CurrentToken
@@ -48,7 +48,7 @@ func Expr() *node2.ASTNode {
 		} else if tok.Type == token.SUB {
 			eat(token.SUB)
 		}
-		nde = (*node2.ASTNode)(node2.NewBinaryOperatorNode(nde, Term(), tok))
+		nde = (*ast.ASTNode)(ast.NewBinaryOperatorNode(nde, Term(), tok))
 	}
 
 	return nde

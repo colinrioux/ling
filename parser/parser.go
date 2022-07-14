@@ -2,7 +2,7 @@ package parser
 
 import (
 	"duck/ling/lexer/token"
-	"duck/ling/parser/ast/node"
+	"duck/ling/parser/ast"
 	"duck/ling/syntax/literal"
 	"duck/ling/syntax/unicode"
 	"fmt"
@@ -100,7 +100,7 @@ func Advance() {
 	}
 }
 
-func Visit(root *node.ASTNode) {
+func Visit(root *ast.ASTNode) {
 	if root == nil {
 		return
 	}

@@ -1,7 +1,7 @@
 package context
 
 import (
-	"duck/ling/parser/ast/node"
+	"duck/ling/parser/ast"
 	"duck/ling/syntax/type"
 )
 
@@ -40,6 +40,6 @@ type GlobalEnvironmentRecord struct{}
 
 // TemplateMapRecord TODO
 type TemplateMapRecord struct {
-	Site  *node.ASTNode
+	Site  *ast.ASTNode
 	Array *_type.ECMAObject
 }
