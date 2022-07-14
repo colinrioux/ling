@@ -1,6 +1,8 @@
 package comment
 
-import "duck/ling/js/syntax/unicode"
+import (
+	"duck/ling/syntax/unicode"
+)
 
 // SingleLineCommentChar :
 // https://tc39.es/ecma262/#prod-SingleLineCommentChar

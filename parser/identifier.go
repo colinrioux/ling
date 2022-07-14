@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"duck/ling/js/lexer/keyword"
-	"duck/ling/js/lexer/token"
-	"duck/ling/js/syntax/literal"
+	"duck/ling/lexer/keyword"
+	"duck/ling/lexer/token"
+	"duck/ling/syntax/literal"
 )
 
 func ParseIdentifier() *token.Token {

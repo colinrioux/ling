@@ -1,7 +1,7 @@
 package main
 
 import (
-	"duck/ling/js/parser"
+	"duck/ling/parser"
 	"fmt"
 )
 

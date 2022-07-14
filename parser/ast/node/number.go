@@ -1,8 +1,8 @@
 package node
 
 import (
-	"duck/ling/js/lexer/token"
-	_type "duck/ling/js/syntax/type"
+	"duck/ling/lexer/token"
+	"duck/ling/syntax/type"
 	"fmt"
 )
 

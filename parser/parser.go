@@ -1,12 +1,11 @@
 package parser
 
 import (
-	"duck/ling/js/lexer/token"
-	"duck/ling/js/parser/ast/node"
-	"duck/ling/js/syntax/literal"
-	"duck/ling/js/syntax/unicode"
+	"duck/ling/lexer/token"
+	"duck/ling/parser/ast/node"
+	"duck/ling/syntax/literal"
+	"duck/ling/syntax/unicode"
 	"fmt"
-	"strconv"
 )
 
 var Pos = 0
@@ -26,16 +25,6 @@ func SkipWhitespace() {
 	for CurrentChar != 0 && unicode.IsWhitespace(CurrentChar) {
 		Advance()
 	}
-}
-
-func GetInt() int {
-	var res string = ""
-	for CurrentChar != 0 && literal.IsDecimalDigit(CurrentChar) {
-		res += string(CurrentChar)
-		Advance()
-	}
-	resI, _ := strconv.Atoi(res)
-	return resI
 }
 
 func GetNextToken() *token.Token {
@@ -109,55 +98,6 @@ func Advance() {
 	} else {
 		CurrentChar = rune(Text[Pos])
 	}
-}
-
-func Factor() *node.ASTNode {
-	tok := CurrentToken
-	if tok.Type == token.ADD {
-		eat(token.ADD)
-		return (*node.ASTNode)(node.NewUnaryOperatorNode(tok, Factor()))
-	} else if tok.Type == token.SUB {
-		eat(token.SUB)
-		return (*node.ASTNode)(node.NewUnaryOperatorNode(tok, Factor()))
-	} else if tok.Type == token.LPAREN {
-		eat(token.LPAREN)
-		nde := Expr()
-		eat(token.RPAREN)
-		return nde
-	} else if tok.Type == token.NUMBER {
-		eat(token.NUMBER)
-		return (*node.ASTNode)(node.NewNumberNode(tok))
-	}
-	return node.NewASTNode(nil, nil, tok)
-}
-
-func Term() *node.ASTNode {
-	var nde = Factor()
-	for CurrentToken.Type == token.MUL || CurrentToken.Type == token.DIV {
-		tok := CurrentToken
-		if CurrentToken.Type == token.MUL {
-			eat(token.MUL)
-		} else if CurrentToken.Type == token.DIV {
-			eat(token.DIV)
-		}
-		nde = (*node.ASTNode)(node.NewBinaryOperatorNode(nde, Term(), tok))
-	}
-	return nde
-}
-
-func Expr() *node.ASTNode {
-	var nde = Term()
-	for CurrentToken.Type == token.ADD || CurrentToken.Type == token.SUB {
-		tok := CurrentToken
-		if tok.Type == token.ADD {
-			eat(token.ADD)
-		} else if tok.Type == token.SUB {
-			eat(token.SUB)
-		}
-		nde = (*node.ASTNode)(node.NewBinaryOperatorNode(nde, Term(), tok))
-	}
-
-	return nde
 }
 
 func Visit(root *node.ASTNode) {

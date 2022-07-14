@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"duck/ling/js/syntax/literal"
-	_type "duck/ling/js/syntax/type"
+	"duck/ling/syntax/literal"
+	"duck/ling/syntax/type"
 	"strconv"
 )
 

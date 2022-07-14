@@ -1,6 +1,8 @@
 package grammar
 
-import "duck/ling/js/syntax/unicode"
+import (
+	"duck/ling/syntax/unicode"
+)
 
 type NonTerminalType uint32
 

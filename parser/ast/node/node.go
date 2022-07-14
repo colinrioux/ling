@@ -1,7 +1,7 @@
 package node
 
 import (
-	"duck/ling/js/lexer/token"
+	"duck/ling/lexer/token"
 	"fmt"
 )
 
@@ -44,4 +44,5 @@ const (
 	NumberNodeType
 	BinaryOperatorNodeType
 	UnaryOperatorNodeType
+	VariableNodeType
 )

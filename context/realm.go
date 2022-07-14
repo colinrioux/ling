@@ -1,8 +1,8 @@
 package context
 
 import (
-	"duck/ling/js/parser/ast/node"
-	_type "duck/ling/js/syntax/type"
+	"duck/ling/parser/ast/node"
+	"duck/ling/syntax/type"
 )
 
 // Realm :
