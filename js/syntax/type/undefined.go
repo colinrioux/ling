@@ -1,17 +1,23 @@
 package _type
 
+import "fmt"
+
 // ECMAUndefined :
 // Primitive ECMA undefined.
-type ECMAUndefined struct {
-	*ECMAPrimitive
-}
+type ECMAUndefined ECMAPrimitive
 
 // NewPrimitiveUndefined :
 // Create a new primitive undefined.
 func NewPrimitiveUndefined() *ECMAUndefined {
 	return &ECMAUndefined{
-		ECMAPrimitive: NewPrimitive3(UndefinedType_, "undefined", nil),
+		Type:       UndefinedType_,
+		Identifier: "undefined",
+		Value:      nil,
 	}
+}
+
+func (p *ECMAUndefined) String() string {
+	return fmt.Sprintf("Undefined(%v,%v)", p.Identifier, p.Value)
 }
 
 // ToBool :

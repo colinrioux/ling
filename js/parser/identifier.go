@@ -13,9 +13,15 @@ func ParseIdentifier() *token.Token {
 		Advance()
 	}
 
-	ok, tok := keyword.IsKeyword(result)
-	if !ok {
-		tok = token.NewToken(token.IDENTIFIER, result)
+	k1 := keyword.GetReservedKeyword(result)
+	if k1 != keyword.RKNOTFOUND {
+		return token.NewToken(token.KEYWORD, k1)
 	}
-	return tok
+
+	k2 := keyword.GetStrictReservedKeyword(result)
+	if k2 != keyword.SRKNOTFOUND {
+		return token.NewToken(token.KEYWORD, k2)
+	}
+
+	return token.NewToken(token.IDENTIFIER, result)
 }

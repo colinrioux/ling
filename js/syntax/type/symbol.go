@@ -1,19 +1,26 @@
 package _type
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 // ECMASymbol
 // Primitive ECMA symbol.
-type ECMASymbol struct {
-	*ECMAPrimitive
-}
+type ECMASymbol ECMAPrimitive
 
 // NewPrimitiveSymbol :
 // Create a new primitive symbol.
 func NewPrimitiveSymbol(identifier string, value interface{}) *ECMASymbol {
 	return &ECMASymbol{
-		ECMAPrimitive: NewPrimitive3(SymbolType_, identifier, value),
+		Type:       SymbolType_,
+		Identifier: identifier,
+		Value:      value,
 	}
+}
+
+func (p *ECMASymbol) String() string {
+	return fmt.Sprintf("Symbol(%v,%v)", p.Identifier, p.Value)
 }
 
 // ToBool :

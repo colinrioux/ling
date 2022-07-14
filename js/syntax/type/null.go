@@ -1,17 +1,23 @@
 package _type
 
+import "fmt"
+
 // ECMANull :
 // Primitive ECMA null.
-type ECMANull struct {
-	*ECMAPrimitive
-}
+type ECMANull ECMAPrimitive
 
 // NewPrimitiveNull :
 // Create a new primitive null.
 func NewPrimitiveNull() *ECMANull {
 	return &ECMANull{
-		ECMAPrimitive: NewPrimitive3(NullType_, "null", nil),
+		Type:       NullType_,
+		Identifier: "null",
+		Value:      nil,
 	}
+}
+
+func (p *ECMANull) String() string {
+	return fmt.Sprintf("Null(%v,%v)", p.Identifier, p.Value)
 }
 
 // ToBool :

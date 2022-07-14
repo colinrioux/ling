@@ -1,5 +1,7 @@
 package _type
 
+import "fmt"
+
 //var KeywordPrimitiveMap = map[string]interface{}{
 //	"true":      NewPrimitiveBoolean("true", true),
 //	"false":     NewPrimitiveBoolean("false", false),
@@ -44,6 +46,10 @@ func NewPrimitive3(_type ECMAPrimitiveType, identifier string, value interface{}
 		Identifier: identifier,
 		Value:      value,
 	}
+}
+
+func (p *ECMAPrimitive) String() string {
+	return fmt.Sprintf("Primitive(%v,%v)", p.Identifier, p.Value)
 }
 
 // ToBool :

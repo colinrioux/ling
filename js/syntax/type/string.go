@@ -1,17 +1,23 @@
 package _type
 
+import "fmt"
+
 // ECMAString :
 // Primitive ECMA string.
-type ECMAString struct {
-	*ECMAPrimitive
-}
+type ECMAString ECMAPrimitive
 
 // NewPrimitiveString :
 // Create a new primitive string.
 func NewPrimitiveString(identifier string, value interface{}) *ECMAString {
 	return &ECMAString{
-		ECMAPrimitive: NewPrimitive3(StringType_, identifier, value),
+		Type:       StringType_,
+		Identifier: identifier,
+		Value:      value,
 	}
+}
+
+func (p *ECMAString) String() string {
+	return fmt.Sprintf("String(%v,\"%v\")", p.Identifier, p.Value)
 }
 
 // ToBool :
@@ -19,5 +25,5 @@ func NewPrimitiveString(identifier string, value interface{}) *ECMAString {
 // https://developer.mozilla.org/en-US/docs/Glossary/Falsy
 // https://developer.mozilla.org/en-US/docs/Glossary/Truthy
 func (p *ECMAString) ToBool() (bool, error) {
-	return len(p.ECMAPrimitive.Value.(string)) > 0, nil
+	return len(p.Value.(string)) > 0, nil
 }
