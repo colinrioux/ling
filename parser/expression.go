@@ -6,20 +6,20 @@ import (
 )
 
 func (parser *Parser) factor() *ast.Node {
-	tok := parser.CurrentToken
+	tok := parser.Lexer.CurrentToken
 	if tok.Type == token.ADD {
-		parser.eat(token.ADD)
+		parser.Lexer.Eat(token.ADD)
 		return (*ast.Node)(ast.NewUnaryOperatorNode(tok, parser.factor()))
 	} else if tok.Type == token.SUB {
-		parser.eat(token.SUB)
+		parser.Lexer.Eat(token.SUB)
 		return (*ast.Node)(ast.NewUnaryOperatorNode(tok, parser.factor()))
 	} else if tok.Type == token.LPAREN {
-		parser.eat(token.LPAREN)
+		parser.Lexer.Eat(token.LPAREN)
 		nde := parser.parseExpression()
-		parser.eat(token.RPAREN)
+		parser.Lexer.Eat(token.RPAREN)
 		return nde
 	} else if tok.Type == token.NUMBER {
-		parser.eat(token.NUMBER)
+		parser.Lexer.Eat(token.NUMBER)
 		return (*ast.Node)(ast.NewNumberNode(tok))
 	}
 	return ast.NewNode(nil, nil, tok)
@@ -27,12 +27,12 @@ func (parser *Parser) factor() *ast.Node {
 
 func (parser *Parser) term() *ast.Node {
 	var nde = parser.factor()
-	for parser.CurrentToken.Type == token.MUL || parser.CurrentToken.Type == token.DIV {
-		tok := parser.CurrentToken
-		if parser.CurrentToken.Type == token.MUL {
-			parser.eat(token.MUL)
-		} else if parser.CurrentToken.Type == token.DIV {
-			parser.eat(token.DIV)
+	for parser.Lexer.CurrentToken.Type == token.MUL || parser.Lexer.CurrentToken.Type == token.DIV {
+		tok := parser.Lexer.CurrentToken
+		if parser.Lexer.CurrentToken.Type == token.MUL {
+			parser.Lexer.Eat(token.MUL)
+		} else if parser.Lexer.CurrentToken.Type == token.DIV {
+			parser.Lexer.Eat(token.DIV)
 		}
 		nde = (*ast.Node)(ast.NewBinaryOperatorNode(nde, parser.term(), tok))
 	}
@@ -41,12 +41,12 @@ func (parser *Parser) term() *ast.Node {
 
 func (parser *Parser) parseExpression() *ast.Node {
 	var nde = parser.term()
-	for parser.CurrentToken.Type == token.ADD || parser.CurrentToken.Type == token.SUB {
-		tok := parser.CurrentToken
+	for parser.Lexer.CurrentToken.Type == token.ADD || parser.Lexer.CurrentToken.Type == token.SUB {
+		tok := parser.Lexer.CurrentToken
 		if tok.Type == token.ADD {
-			parser.eat(token.ADD)
+			parser.Lexer.Eat(token.ADD)
 		} else if tok.Type == token.SUB {
-			parser.eat(token.SUB)
+			parser.Lexer.Eat(token.SUB)
 		}
 		nde = (*ast.Node)(ast.NewBinaryOperatorNode(nde, parser.term(), tok))
 	}
