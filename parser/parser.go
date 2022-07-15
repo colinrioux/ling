@@ -17,10 +17,11 @@ type Parser struct {
 // NewParser :
 // Create a new ECMA parser.
 func NewParser(text string) *Parser {
-	return &Parser{
-		CurrentToken: nil,
-		Lexer:        lexer.NewLexer(text),
+	var p *Parser = &Parser{
+		Lexer: lexer.NewLexer(text),
 	}
+	p.CurrentToken = p.Lexer.GetNextToken()
+	return p
 }
 
 // eat :
@@ -31,10 +32,10 @@ func (parser *Parser) eat(tokenType token.Type) {
 	}
 }
 
-// GetNext :
+// Parse :
 // Get the next token.
-func (parser *Parser) GetNext() {
-	parser.CurrentToken = parser.Lexer.GetNextToken()
+func (parser *Parser) Parse() *ast.Node {
+	return parser.parseExpression()
 }
 
 func Visit(root *ast.Node) {
