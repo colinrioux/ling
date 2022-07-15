@@ -10,26 +10,24 @@ import (
 // A type to represent an ECMA lexer. The lexer scans the
 // input to produce tokens.
 type Lexer struct {
-	Pos          int
-	CurrentToken *token.Token
-	CurrentChar  rune
-	Text         string
+	Pos         int
+	CurrentChar rune
+	Text        string
 }
 
 // NewLexer :
 // Creates a new lexer.
 func NewLexer(text string) *Lexer {
 	return &Lexer{
-		Pos:          0,
-		CurrentToken: nil,
-		CurrentChar:  rune(text[0]),
-		Text:         text,
+		Pos:         0,
+		CurrentChar: rune(text[0]),
+		Text:        text,
 	}
 }
 
-// getNextToken :
+// GetNextToken :
 // Get the next token in the Text.
-func (lexer *Lexer) getNextToken() *token.Token {
+func (lexer *Lexer) GetNextToken() *token.Token {
 	for lexer.CurrentChar != 0 {
 		if unicode.IsWhitespace(lexer.CurrentChar) {
 			lexer.whitespace()
@@ -120,18 +118,4 @@ func (lexer *Lexer) peek() rune {
 		return 0
 	}
 	return rune(lexer.Text[peekPos])
-}
-
-// Eat :
-// Instruct the lexer to Eat the CurrentToken if it matches tokenType and get the next token.
-func (lexer *Lexer) Eat(tokenType token.Type) {
-	if tokenType == lexer.CurrentToken.Type {
-		lexer.CurrentToken = lexer.getNextToken()
-	}
-}
-
-// GetNext :
-// Get the next token.
-func (lexer *Lexer) GetNext() {
-	lexer.CurrentToken = lexer.getNextToken()
 }

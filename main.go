@@ -9,8 +9,8 @@ func main() {
 	//parser.Text = "null"
 	psr := parser.NewParser("var x = \"hi\"")
 	fmt.Println(psr.Lexer.Text)
-	psr.Lexer.GetNext()
-	fmt.Println(psr.Lexer.CurrentToken)
+	psr.GetNext()
+	fmt.Println(psr.CurrentToken)
 
 	//nde := parser.expression()
 	//fmt.Println(nde.Visit())
