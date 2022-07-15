@@ -6,7 +6,7 @@ import (
 )
 
 // AssignmentNode :
-// An assignment node is used to represent an expression: var x = y,
+// An AssignmentNode is used to represent an expression: var x = y,
 // where "var x" is the left child of this node,
 // "=" is the token of this node,
 // and "y" is the resulting expression node.

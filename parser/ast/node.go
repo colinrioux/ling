@@ -11,6 +11,7 @@ type Node struct {
 	Type     NodeType
 	Children []*Node
 	Token    *token.Token
+	Name     string
 }
 
 // NewNode :
@@ -59,4 +60,9 @@ const (
 	UnaryOperatorNodeType
 	VariableNodeType
 	AssignmentNodeType
+	BlockNodeType
 )
+
+// EmptyNode :
+// Used to represent useless nodes (with default initialization).
+type EmptyNode Node

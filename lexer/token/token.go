@@ -43,6 +43,8 @@ const (
 	KEYWORD
 	ASSIGN
 	SEMICOLON
+	LBRACE
+	RBRACE
 )
 
 var asString = [...]string{
@@ -66,6 +68,8 @@ var asString = [...]string{
 	"KEYWORD",
 	"ASSIGN",
 	"SEMICOLON",
+	"LBRACE",
+	"RBRACE",
 }
 
 func (tok Type) String() string {
