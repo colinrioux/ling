@@ -42,7 +42,7 @@ func Visit(root *ast.Node) {
 	if root == nil {
 		return
 	}
-	Visit((*root).Left)
-	Visit((*root).Right)
+	Visit((*root).Children[0])
+	Visit((*root).Children[1])
 	fmt.Println((*root).Token)
 }

@@ -16,13 +16,12 @@ type AssignmentNode Node
 // Create a new assignment node.
 func NewAssignmentNode(left *VariableNode, operator *token.Token, right *Node) *AssignmentNode {
 	return &AssignmentNode{
-		Type:  AssignmentNodeType,
-		Left:  (*Node)(left),
-		Right: right,
-		Token: operator,
+		Type:     AssignmentNodeType,
+		Children: []*Node{(*Node)(left), right},
+		Token:    operator,
 	}
 }
 
 func (node *AssignmentNode) String() string {
-	return fmt.Sprintf("AssignmentNode(Var=%v,Expr=%v,Tok=%v)", node.Left, node.Right, *node.Token)
+	return fmt.Sprintf("AssignmentNode(Var=%v,Expr=%v,Tok=%v)", node.Children[0], node.Children[1], *node.Token)
 }

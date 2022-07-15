@@ -1,6 +1,8 @@
 package util
 
-import "github.com/gijsbers/go-pcre"
+import (
+	"github.com/gijsbers/go-pcre"
+)
 
 // Match :
 // Helper function for pattern matching.

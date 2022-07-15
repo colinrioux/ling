@@ -8,20 +8,18 @@ import (
 // Node :
 // Base Node type for all AST nodes.
 type Node struct {
-	Type  NodeType
-	Left  *Node
-	Right *Node
-	Token *token.Token
+	Type     NodeType
+	Children []*Node
+	Token    *token.Token
 }
 
 // NewNode :
 // Create a new Node.
 func NewNode(left *Node, right *Node, token *token.Token) *Node {
 	return &Node{
-		Type:  UnknownNodeType,
-		Left:  left,
-		Right: right,
-		Token: token,
+		Type:     UnknownNodeType,
+		Children: []*Node{left, right},
+		Token:    token,
 	}
 }
 
@@ -40,7 +38,16 @@ func (node *Node) Visit() interface{} {
 }
 
 func (node *Node) String() string {
-	return fmt.Sprintf("ASTNode(%v,%v,%v)", node.Left, node.Right, *node.Token)
+	return fmt.Sprintf("ASTNode(%v,%v)", node.ChildrenToString(), *node.Token)
+}
+
+func (node *Node) ChildrenToString() string {
+	str := "Children("
+	for i, child := range node.Children {
+		str += string(rune(i)) + "=" + child.String() + ","
+	}
+	str += ")"
+	return str
 }
 
 type NodeType uint16

@@ -14,8 +14,6 @@ type NumberNode Node
 func NewNumberNode(value *token.Token) *NumberNode {
 	return &NumberNode{
 		Type:  NumberNodeType,
-		Left:  nil,
-		Right: nil,
 		Token: value,
 	}
 }

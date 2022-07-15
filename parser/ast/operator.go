@@ -16,10 +16,9 @@ type BinaryOperatorNode Node
 // Create a new BinaryOperatorNode.
 func NewBinaryOperatorNode(left *Node, right *Node, operator *token.Token) *BinaryOperatorNode {
 	return &BinaryOperatorNode{
-		Type:  BinaryOperatorNodeType,
-		Left:  left,
-		Right: right,
-		Token: operator,
+		Type:     BinaryOperatorNodeType,
+		Children: []*Node{left, right},
+		Token:    operator,
 	}
 }
 
@@ -27,34 +26,33 @@ func NewBinaryOperatorNode(left *Node, right *Node, operator *token.Token) *Bina
 // Visit method for a BinaryOperatorNode.
 func (node *BinaryOperatorNode) Visit() any {
 	if node.Token.Type == token.ADD {
-		return ((*node.Left).Visit()).(float64) + ((*node.Right).Visit()).(float64)
+		return ((*node.Children[0]).Visit()).(float64) + ((*node.Children[1]).Visit()).(float64)
 	} else if node.Token.Type == token.SUB {
-		return ((*node.Left).Visit()).(float64) - ((*node.Right).Visit()).(float64)
+		return ((*node.Children[0]).Visit()).(float64) - ((*node.Children[1]).Visit()).(float64)
 	} else if node.Token.Type == token.MUL {
-		return ((*node.Left).Visit()).(float64) * ((*node.Right).Visit()).(float64)
+		return ((*node.Children[0]).Visit()).(float64) * ((*node.Children[1]).Visit()).(float64)
 	}
 	// DIV
-	return ((*node.Left).Visit()).(float64) + ((*node.Right).Visit()).(float64)
+	return ((*node.Children[0]).Visit()).(float64) + ((*node.Children[1]).Visit()).(float64)
 }
 
 func (node *BinaryOperatorNode) String() string {
-	return fmt.Sprintf("BinaryOperatorNode(%v,%v,%v)", node.Left, node.Right, *node.Token)
+	return fmt.Sprintf("BinaryOperatorNode(%v,%v,%v)", node.Children[0], node.Children[1], *node.Token)
 }
 
 // UnaryOperatorNode :
 // A UnaryOperatorNode is used to represent operations like the form -x,
 // where "-" is the token (operator) of the node,
-// and "x" is the right child of the node.
+// and "x" is the only child of the node.
 type UnaryOperatorNode Node
 
 // NewUnaryOperatorNode :
 // Create a new UnaryOperatorNode.
 func NewUnaryOperatorNode(operator *token.Token, expression *Node) *UnaryOperatorNode {
 	return &UnaryOperatorNode{
-		Type:  UnaryOperatorNodeType,
-		Left:  nil,
-		Right: expression,
-		Token: operator,
+		Type:     UnaryOperatorNodeType,
+		Children: []*Node{expression},
+		Token:    operator,
 	}
 }
 
@@ -63,12 +61,12 @@ func NewUnaryOperatorNode(operator *token.Token, expression *Node) *UnaryOperato
 func (node *UnaryOperatorNode) Visit() any {
 	op := node.Token.Type
 	if op == token.ADD {
-		return +((*node.Right).Visit()).(float64)
+		return +((*node.Children[0]).Visit()).(float64)
 	}
 	// MINUS
-	return -((*node.Right).Visit()).(float64)
+	return -((*node.Children[0]).Visit()).(float64)
 }
 
 func (node *UnaryOperatorNode) String() string {
-	return fmt.Sprintf("UnaryOperatorNode(%v,%v)", node.Right, *node.Token)
+	return fmt.Sprintf("UnaryOperatorNode(%v,%v)", node.Children[0], *node.Token)
 }

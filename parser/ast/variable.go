@@ -14,8 +14,6 @@ type VariableNode Node
 func NewVariableNode(token *token.Token) *VariableNode {
 	return &VariableNode{
 		Type:  VariableNodeType,
-		Left:  nil,
-		Right: nil,
 		Token: token,
 	}
 }
