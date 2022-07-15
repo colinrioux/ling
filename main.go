@@ -6,11 +6,13 @@ import (
 )
 
 func main() {
-	//parser.Text = "null"
-	psr := parser.NewParser("var x = \"hi\"")
+	//psr := parser.NewParser("var x = \"hi\"")
+	psr := parser.NewParser("(3 + 5) * 5")
 	fmt.Println(psr.Lexer.Text)
-	psr.Parse()
-	fmt.Println(psr.CurrentToken)
+	tree := psr.Parse()
+	if tree != nil {
+		fmt.Println(tree.Visit())
+	}
 
 	//nde := parser.expression()
 	//fmt.Println(nde.Visit())

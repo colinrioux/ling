@@ -2,7 +2,6 @@ package ast
 
 import (
 	"duck/ling/lexer/token"
-	"duck/ling/syntax/type"
 	"fmt"
 )
 
@@ -27,6 +26,6 @@ func (node NumberNode) String() string {
 
 // Visit :
 // Visit method for a NumberNode.
-func (node NumberNode) Visit() interface{} {
-	return node.Token.Value.(*_type.ECMANumber).Value
+func (node NumberNode) Visit() float64 {
+	return node.Token.Value.(float64)
 }
