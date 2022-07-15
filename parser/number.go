@@ -6,18 +6,19 @@ import (
 	"strconv"
 )
 
-func ParseNumber() *_type.ECMANumber {
+// parseNumber :
+func (parser *Parser) parseNumber() *_type.ECMANumber {
 	var res string = ""
-	for CurrentChar != 0 && (literal.IsDecimalDigit(CurrentChar) ||
-		CurrentChar == '.' || literal.IsScientific(CurrentChar, Peek())) {
+	for parser.CurrentChar != 0 && (literal.IsDecimalDigit(parser.CurrentChar) ||
+		parser.CurrentChar == '.' || literal.IsScientific(parser.CurrentChar, parser.peek())) {
 
-		if literal.IsScientific(CurrentChar, Peek()) {
-			res += string(CurrentChar)
-			Advance()
+		if literal.IsScientific(parser.CurrentChar, parser.peek()) {
+			res += string(parser.CurrentChar)
+			parser.advance()
 		}
 
-		res += string(CurrentChar)
-		Advance()
+		res += string(parser.CurrentChar)
+		parser.advance()
 	}
 	resI, _ := strconv.ParseFloat(res, 64)
 	resN := _type.NewPrimitiveNumber("", resI)

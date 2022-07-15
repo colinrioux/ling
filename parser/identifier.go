@@ -6,15 +6,21 @@ import (
 	"duck/ling/syntax/literal"
 )
 
-func ParseIdentifier() *token.Token {
+// parseIdentifier :
+// Parses an ECMA identifier appropriately. Keywords are also managed here.
+func (parser *Parser) parseIdentifier() *token.Token {
 	result := ""
-	for CurrentChar != 0 && literal.IsAlphaNumeric(CurrentChar) {
-		result += string(CurrentChar)
-		Advance()
+	for parser.CurrentChar != 0 && literal.IsAlphaNumeric(parser.CurrentChar) {
+		result += string(parser.CurrentChar)
+		parser.advance()
 	}
 
 	k1 := keyword.GetReservedKeyword(result)
 	if k1 != keyword.RKNOTFOUND {
+		if k1 == keyword.VAR {
+			// If we have a var keyword, we want to parse a variable statement.
+			return parser.parseVariableStatement()
+		}
 		return token.NewToken(token.KEYWORD, k1)
 	}
 

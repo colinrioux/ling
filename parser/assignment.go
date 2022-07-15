@@ -1,5 +1,5 @@
 package parser
 
-func ParseAssignment() {
+func (parser *Parser) parseAssignment() {
 
 }

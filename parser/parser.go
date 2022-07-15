@@ -8,98 +8,126 @@ import (
 	"fmt"
 )
 
-var Pos = 0
-var CurrentToken *token.Token = nil
-var CurrentChar rune
-var Text string
-
-func Peek() rune {
-	peekPos := Pos + 1
-	if peekPos > len(Text)-1 {
-		return 0
-	}
-	return rune(Text[peekPos])
+// Parser :
+// A type to represent an ECMA parser.
+type Parser struct {
+	Pos          int
+	CurrentToken *token.Token
+	CurrentChar  rune
+	Text         string
 }
 
-func SkipWhitespace() {
-	for CurrentChar != 0 && unicode.IsWhitespace(CurrentChar) {
-		Advance()
+// NewParser :
+// Create a new ECMA parser.
+func NewParser(text string) *Parser {
+	return &Parser{
+		Pos:          0,
+		CurrentToken: nil,
+		CurrentChar:  rune(text[0]),
+		Text:         text,
 	}
 }
 
-func GetNextToken() *token.Token {
-	for CurrentChar != 0 {
-		if unicode.IsWhitespace(CurrentChar) {
-			SkipWhitespace()
+func (parser *Parser) parseWhitespace() {
+	for parser.CurrentChar != 0 && unicode.IsWhitespace(parser.CurrentChar) {
+		parser.advance()
+	}
+}
+
+func (parser *Parser) parseNextToken() *token.Token {
+	for parser.CurrentChar != 0 {
+		if unicode.IsWhitespace(parser.CurrentChar) {
+			parser.parseWhitespace()
 			continue
 		}
 
 		// Identifiers
-		if literal.IsAlpha(CurrentChar) || CurrentChar == '_' {
-			return ParseIdentifier()
+		if literal.IsAlpha(parser.CurrentChar) || parser.CurrentChar == '_' {
+			return parser.parseIdentifier()
 		}
 
-		if CurrentChar == '=' {
-			Advance()
+		if parser.CurrentChar == '=' {
+			parser.advance()
 			return token.NewToken(token.ASSIGN, "=")
 		}
 
-		if CurrentChar == ';' {
-			Advance()
+		if parser.CurrentChar == ';' {
+			parser.advance()
 			return token.NewToken(token.SEMICOLON, ";")
 		}
 
 		// Numbers
-		if literal.IsDecimalDigit(CurrentChar) || CurrentChar == '.' {
-			return token.NewToken(token.NUMBER, ParseNumber())
+		if literal.IsDecimalDigit(parser.CurrentChar) || parser.CurrentChar == '.' {
+			// TODO have parseNumber return a token instead.
+			return token.NewToken(token.NUMBER, parser.parseNumber())
 		}
 
-		if CurrentChar == '+' {
-			Advance()
+		if parser.CurrentChar == '+' {
+			parser.advance()
 			return token.NewToken(token.ADD, "+")
 		}
 
-		if CurrentChar == '-' {
-			Advance()
+		if parser.CurrentChar == '-' {
+			parser.advance()
 			return token.NewToken(token.SUB, "-")
 		}
 
-		if CurrentChar == '*' {
-			Advance()
+		if parser.CurrentChar == '*' {
+			parser.advance()
 			return token.NewToken(token.MUL, "*")
 		}
 
-		if CurrentChar == '/' {
-			Advance()
+		if parser.CurrentChar == '/' {
+			parser.advance()
 			return token.NewToken(token.DIV, "/")
 		}
 
-		if CurrentChar == '(' {
-			Advance()
+		if parser.CurrentChar == '(' {
+			parser.advance()
 			return token.NewToken(token.LPAREN, "(")
 		}
 
-		if CurrentChar == ')' {
-			Advance()
+		if parser.CurrentChar == ')' {
+			parser.advance()
 			return token.NewToken(token.RPAREN, ")")
 		}
 	}
 	return token.NewToken(token.EOF, 0)
 }
 
-func eat(tokenType token.Type) {
-	if tokenType == CurrentToken.Type {
-		CurrentToken = GetNextToken()
+// Start :
+// Start parsing the text.
+func (parser *Parser) Start() {
+
+}
+
+// eat :
+// Parse the next token.
+func (parser *Parser) eat(tokenType token.Type) {
+	if tokenType == parser.CurrentToken.Type {
+		parser.CurrentToken = parser.parseNextToken()
 	}
 }
 
-func Advance() {
-	Pos++
-	if Pos > len(Text)-1 {
-		CurrentChar = 0
+// advance :
+// Parse the next character in Text.
+func (parser *Parser) advance() {
+	parser.Pos++
+	if parser.Pos > len(parser.Text)-1 {
+		parser.CurrentChar = 0
 	} else {
-		CurrentChar = rune(Text[Pos])
+		parser.CurrentChar = rune(parser.Text[parser.Pos])
 	}
+}
+
+// peek :
+// Parse the next character in Text without incrementing the iterator.
+func (parser *Parser) peek() rune {
+	peekPos := parser.Pos + 1
+	if peekPos > len(parser.Text)-1 {
+		return 0
+	}
+	return rune(parser.Text[peekPos])
 }
 
 func Visit(root *ast.Node) {

@@ -6,14 +6,12 @@ import (
 )
 
 func main() {
-	parser.Text = "null"
-	//parser.Text = "var x = \"hi\""
-	fmt.Println(parser.Text)
-	parser.CurrentChar = rune(parser.Text[parser.Pos])
-	parser.CurrentToken = parser.GetNextToken()
-	fmt.Println(parser.CurrentToken)
+	//parser.Text = "null"
+	psr := parser.NewParser("var x = \"hi\"")
+	fmt.Println(psr.Text)
+	fmt.Println(psr.CurrentToken)
 
-	//nde := parser.Expr()
+	//nde := parser.expression()
 	//fmt.Println(nde.Visit())
 	//fmt.Printf("%v bytes\n", unsafe.Sizeof(nde))
 }
