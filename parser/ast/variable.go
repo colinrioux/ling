@@ -2,12 +2,15 @@ package ast
 
 import (
 	"duck/ling/lexer/token"
+	"fmt"
 )
 
-type AssignmentNode ASTNode
+// VariableNode :
+// A variable node is used to represent a variable as var/let x.
+type VariableNode Node
 
-type VariableNode ASTNode
-
+// NewVariableNode :
+// Create a new VariableNode.
 func NewVariableNode(token *token.Token) *VariableNode {
 	return &VariableNode{
 		Type:  VariableNodeType,
@@ -15,4 +18,8 @@ func NewVariableNode(token *token.Token) *VariableNode {
 		Right: nil,
 		Token: token,
 	}
+}
+
+func (node *VariableNode) String() string {
+	return fmt.Sprintf("VariableNode(%v)", *node.Token)
 }

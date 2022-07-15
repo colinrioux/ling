@@ -5,15 +5,19 @@ import (
 	"fmt"
 )
 
-type ASTNode struct {
-	Type  ASTNodeType
-	Left  *ASTNode
-	Right *ASTNode
+// Node :
+// Base Node type for all AST nodes.
+type Node struct {
+	Type  NodeType
+	Left  *Node
+	Right *Node
 	Token *token.Token
 }
 
-func NewASTNode(left *ASTNode, right *ASTNode, token *token.Token) *ASTNode {
-	return &ASTNode{
+// NewNode :
+// Create a new Node.
+func NewNode(left *Node, right *Node, token *token.Token) *Node {
+	return &Node{
 		Type:  UnknownNodeType,
 		Left:  left,
 		Right: right,
@@ -21,7 +25,9 @@ func NewASTNode(left *ASTNode, right *ASTNode, token *token.Token) *ASTNode {
 	}
 }
 
-func (node *ASTNode) Visit() interface{} {
+// Visit :
+// Visitation per node on AST traversal.
+func (node *Node) Visit() interface{} {
 	switch node.Type {
 	case NumberNodeType:
 		return (*NumberNode)(node).Visit()
@@ -33,16 +39,17 @@ func (node *ASTNode) Visit() interface{} {
 	return nil
 }
 
-func (node *ASTNode) String() string {
-	return fmt.Sprintf("ASTNode(%v,%v,%s)", node.Left, node.Right, *node.Token)
+func (node *Node) String() string {
+	return fmt.Sprintf("ASTNode(%v,%v,%v)", node.Left, node.Right, *node.Token)
 }
 
-type ASTNodeType uint16
+type NodeType uint16
 
 const (
-	UnknownNodeType ASTNodeType = iota
+	UnknownNodeType NodeType = iota
 	NumberNodeType
 	BinaryOperatorNodeType
 	UnaryOperatorNodeType
 	VariableNodeType
+	AssignmentNodeType
 )

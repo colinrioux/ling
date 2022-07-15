@@ -34,6 +34,7 @@ func GetNextToken() *token.Token {
 			continue
 		}
 
+		// Identifiers
 		if literal.IsAlpha(CurrentChar) || CurrentChar == '_' {
 			return ParseIdentifier()
 		}
@@ -48,6 +49,7 @@ func GetNextToken() *token.Token {
 			return token.NewToken(token.SEMICOLON, ";")
 		}
 
+		// Numbers
 		if literal.IsDecimalDigit(CurrentChar) || CurrentChar == '.' {
 			return token.NewToken(token.NUMBER, ParseNumber())
 		}
@@ -100,7 +102,7 @@ func Advance() {
 	}
 }
 
-func Visit(root *ast.ASTNode) {
+func Visit(root *ast.Node) {
 	if root == nil {
 		return
 	}

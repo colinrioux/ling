@@ -5,9 +5,16 @@ import (
 	"fmt"
 )
 
-type BinaryOperatorNode ASTNode
+// BinaryOperatorNode :
+// A BinaryOperatorNode is used to represent operations like the form x * y,
+// where "x" is the left child of the node,
+// "*" is the token (operator) of the node,
+// and "y" is the right child of the node.
+type BinaryOperatorNode Node
 
-func NewBinaryOperatorNode(left *ASTNode, right *ASTNode, operator *token.Token) *BinaryOperatorNode {
+// NewBinaryOperatorNode :
+// Create a new BinaryOperatorNode.
+func NewBinaryOperatorNode(left *Node, right *Node, operator *token.Token) *BinaryOperatorNode {
 	return &BinaryOperatorNode{
 		Type:  BinaryOperatorNodeType,
 		Left:  left,
@@ -16,6 +23,8 @@ func NewBinaryOperatorNode(left *ASTNode, right *ASTNode, operator *token.Token)
 	}
 }
 
+// Visit :
+// Visit method for a BinaryOperatorNode.
 func (node *BinaryOperatorNode) Visit() any {
 	if node.Token.Type == token.ADD {
 		return ((*node.Left).Visit()).(float64) + ((*node.Right).Visit()).(float64)
@@ -29,12 +38,18 @@ func (node *BinaryOperatorNode) Visit() any {
 }
 
 func (node *BinaryOperatorNode) String() string {
-	return fmt.Sprintf("BinaryOperatorNode(%v,%v,%s)", node.Left, node.Right, *node.Token)
+	return fmt.Sprintf("BinaryOperatorNode(%v,%v,%v)", node.Left, node.Right, *node.Token)
 }
 
-type UnaryOperatorNode ASTNode
+// UnaryOperatorNode :
+// A UnaryOperatorNode is used to represent operations like the form -x,
+// where "-" is the token (operator) of the node,
+// and "x" is the right child of the node.
+type UnaryOperatorNode Node
 
-func NewUnaryOperatorNode(operator *token.Token, expression *ASTNode) *UnaryOperatorNode {
+// NewUnaryOperatorNode :
+// Create a new UnaryOperatorNode.
+func NewUnaryOperatorNode(operator *token.Token, expression *Node) *UnaryOperatorNode {
 	return &UnaryOperatorNode{
 		Type:  UnaryOperatorNodeType,
 		Left:  nil,
@@ -43,6 +58,8 @@ func NewUnaryOperatorNode(operator *token.Token, expression *ASTNode) *UnaryOper
 	}
 }
 
+// Visit :
+// Visit method for a UnaryOperatorNode.
 func (node *UnaryOperatorNode) Visit() any {
 	op := node.Token.Type
 	if op == token.ADD {
@@ -53,5 +70,5 @@ func (node *UnaryOperatorNode) Visit() any {
 }
 
 func (node *UnaryOperatorNode) String() string {
-	return fmt.Sprintf("UnaryOperatorNode(%v,%s)", node.Right, *node.Token)
+	return fmt.Sprintf("UnaryOperatorNode(%v,%v)", node.Right, *node.Token)
 }

@@ -5,14 +5,14 @@ import (
 	"duck/ling/parser/ast"
 )
 
-func Factor() *ast.ASTNode {
+func Factor() *ast.Node {
 	tok := CurrentToken
 	if tok.Type == token.ADD {
 		eat(token.ADD)
-		return (*ast.ASTNode)(ast.NewUnaryOperatorNode(tok, Factor()))
+		return (*ast.Node)(ast.NewUnaryOperatorNode(tok, Factor()))
 	} else if tok.Type == token.SUB {
 		eat(token.SUB)
-		return (*ast.ASTNode)(ast.NewUnaryOperatorNode(tok, Factor()))
+		return (*ast.Node)(ast.NewUnaryOperatorNode(tok, Factor()))
 	} else if tok.Type == token.LPAREN {
 		eat(token.LPAREN)
 		nde := Expr()
@@ -20,12 +20,12 @@ func Factor() *ast.ASTNode {
 		return nde
 	} else if tok.Type == token.NUMBER {
 		eat(token.NUMBER)
-		return (*ast.ASTNode)(ast.NewNumberNode(tok))
+		return (*ast.Node)(ast.NewNumberNode(tok))
 	}
-	return ast.NewASTNode(nil, nil, tok)
+	return ast.NewNode(nil, nil, tok)
 }
 
-func Term() *ast.ASTNode {
+func Term() *ast.Node {
 	var nde = Factor()
 	for CurrentToken.Type == token.MUL || CurrentToken.Type == token.DIV {
 		tok := CurrentToken
@@ -34,12 +34,12 @@ func Term() *ast.ASTNode {
 		} else if CurrentToken.Type == token.DIV {
 			eat(token.DIV)
 		}
-		nde = (*ast.ASTNode)(ast.NewBinaryOperatorNode(nde, Term(), tok))
+		nde = (*ast.Node)(ast.NewBinaryOperatorNode(nde, Term(), tok))
 	}
 	return nde
 }
 
-func Expr() *ast.ASTNode {
+func Expr() *ast.Node {
 	var nde = Term()
 	for CurrentToken.Type == token.ADD || CurrentToken.Type == token.SUB {
 		tok := CurrentToken
@@ -48,7 +48,7 @@ func Expr() *ast.ASTNode {
 		} else if tok.Type == token.SUB {
 			eat(token.SUB)
 		}
-		nde = (*ast.ASTNode)(ast.NewBinaryOperatorNode(nde, Term(), tok))
+		nde = (*ast.Node)(ast.NewBinaryOperatorNode(nde, Term(), tok))
 	}
 
 	return nde

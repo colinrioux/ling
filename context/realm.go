@@ -40,6 +40,6 @@ type GlobalEnvironmentRecord struct{}
 
 // TemplateMapRecord TODO
 type TemplateMapRecord struct {
-	Site  *ast.ASTNode
+	Site  *ast.Node
 	Array *_type.ECMAObject
 }
