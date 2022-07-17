@@ -39,53 +39,393 @@ func (lexer *Lexer) GetNextToken() *token.Token {
 			return lexer.getIdentifierOrKeyword()
 		}
 
-		// TODO
+		// ASSIGN
 		if lexer.CurrentChar == '=' {
-			lexer.advance()
+			lexer.advance(1)
+
+			// EQUALITY
+			if lexer.CurrentChar == '=' {
+				lexer.advance(1)
+
+				// STRICT EQUALITY
+				if lexer.CurrentChar == '=' {
+					lexer.advance(1)
+					return token.NewToken(token.STRICT_EQUALITY, "===")
+				}
+
+				return token.NewToken(token.EQUALITY, "==")
+			}
+
 			return token.NewToken(token.ASSIGN, "=")
 		}
 
-		// TODO
+		// SEMICOLON
 		if lexer.CurrentChar == ';' {
-			lexer.advance()
+			lexer.advance(1)
 			return token.NewToken(token.SEMICOLON, ";")
 		}
 
+		// COMMA
+		if lexer.CurrentChar == ',' {
+			lexer.advance(1)
+			return token.NewToken(token.COMMA, ",")
+		}
+
+		// DOT
+		if lexer.CurrentChar == '.' && !literal.IsDecimalDigit(lexer.peek(1)) {
+			lexer.advance(1)
+
+			// SPREAD
+			if lexer.CurrentChar == '.' && lexer.peek(1) == '.' {
+				lexer.advance(2)
+				return token.NewToken(token.SPREAD, "...")
+			}
+
+			return token.NewToken(token.DOT, ".")
+		}
+
 		// Numbers
-		// TODO big int
 		if literal.IsDecimalDigit(lexer.CurrentChar) || lexer.CurrentChar == '.' {
 			return lexer.getNumber()
 		}
 
-		// TODO
+		// ADDITION
 		if lexer.CurrentChar == '+' {
-			lexer.advance()
-			return token.NewToken(token.ADD, "+")
+			lexer.advance(1)
+
+			// INCREMENT
+			if lexer.CurrentChar == '+' {
+				lexer.advance(1)
+				return token.NewToken(token.INCREMENT, "++")
+			}
+
+			// ADDITION ASSIGN
+			if lexer.CurrentChar == '=' {
+				lexer.advance(1)
+				return token.NewToken(token.ADDITION_ASSIGN, "+=")
+			}
+
+			return token.NewToken(token.ADDITION, "+")
 		}
 
+		// SUBTRACTION
 		if lexer.CurrentChar == '-' {
-			lexer.advance()
-			return token.NewToken(token.SUB, "-")
+			lexer.advance(1)
+
+			// DECREMENT
+			if lexer.CurrentChar == '-' {
+				lexer.advance(1)
+				return token.NewToken(token.DECREMENT, "--")
+			}
+
+			// SUBTRACTION ASSIGN
+			if lexer.CurrentChar == '=' {
+				lexer.advance(1)
+				return token.NewToken(token.SUBTRACTION_ASSIGN, "-=")
+			}
+
+			return token.NewToken(token.SUBTRACTION, "-")
 		}
 
+		// MULTIPLICATION
 		if lexer.CurrentChar == '*' {
-			lexer.advance()
-			return token.NewToken(token.MUL, "*")
+			lexer.advance(1)
+
+			// EXPONENT
+			if lexer.CurrentChar == '*' {
+				lexer.advance(1)
+
+				// EXPONENT ASSIGN
+				if lexer.CurrentChar == '=' {
+					lexer.advance(1)
+					return token.NewToken(token.EXPONENT_ASSIGN, "**=")
+				}
+
+				return token.NewToken(token.EXPONENT, "**")
+			}
+
+			// RIGHT MULTI LINE COMMENT
+			if lexer.CurrentChar == '/' {
+				lexer.advance(1)
+				return token.NewToken(token.RMULTI_LINE_COMMENT, "*/")
+			}
+
+			// MULTIPLICATION ASSIGN
+			if lexer.CurrentChar == '=' {
+				lexer.advance(1)
+				return token.NewToken(token.MULTIPLY_ASSIGN, "*=")
+			}
+
+			return token.NewToken(token.MULTIPLICATION, "*")
 		}
 
+		// DIVISION
 		if lexer.CurrentChar == '/' {
-			lexer.advance()
-			return token.NewToken(token.DIV, "/")
+			lexer.advance(1)
+
+			// SINGLE LINE COMMENT
+			if lexer.CurrentChar == '/' {
+				lexer.advance(1)
+				return token.NewToken(token.SINGLE_LINE_COMMENT, "//")
+			}
+
+			// LEFT MULTI LINE COMMENT
+			if lexer.CurrentChar == '*' {
+				lexer.advance(1)
+				return token.NewToken(token.LMULTI_LINE_COMMENT, "/*")
+			}
+
+			// DIVISION ASSIGN
+			if lexer.CurrentChar == '=' {
+				lexer.advance(1)
+				return token.NewToken(token.DIVISION_ASSIGN, "/=")
+			}
+
+			return token.NewToken(token.DIVISION, "/")
+		}
+
+		// LESS THAN
+		if lexer.CurrentChar == '<' {
+			lexer.advance(1)
+
+			// LEFT SHIFT
+			if lexer.CurrentChar == '<' {
+				lexer.advance(1)
+
+				// LEFT SHIFT ASSIGN
+				if lexer.CurrentChar == '=' {
+					lexer.advance(1)
+					return token.NewToken(token.LSHIFT_ASSIGN, "<<=")
+				}
+
+				return token.NewToken(token.LSHIFT, "<<")
+			}
+
+			// LESS THAN OR EQUAL
+			if lexer.CurrentChar == '=' {
+				lexer.advance(1)
+				return token.NewToken(token.LESS_THAN_OR_EQUAL, "<=")
+			}
+
+			return token.NewToken(token.LESS_THAN, "<")
+		}
+
+		// GREATER THAN
+		if lexer.CurrentChar == '>' {
+			lexer.advance(1)
+
+			// RIGHT SHIFT
+			if lexer.CurrentChar == '>' {
+				lexer.advance(1)
+
+				// RIGHT SHIFT ASSIGN
+				if lexer.CurrentChar == '=' {
+					lexer.advance(1)
+					return token.NewToken(token.RSHIFT_ASSIGN, ">>=")
+				}
+
+				// UNSIGNED RIGHT SHIFT
+				if lexer.CurrentChar == '>' {
+					lexer.advance(1)
+
+					// UNSIGNED RIGHT SHIFT ASSIGN
+					if lexer.CurrentChar == '=' {
+						lexer.advance(1)
+						return token.NewToken(token.URSHIFT_ASSIGN, ">>>=")
+					}
+
+					return token.NewToken(token.URSHIFT, ">>>")
+				}
+
+				return token.NewToken(token.RSHIFT, ">>")
+			}
+
+			// GREATER THAN OR EQUAL
+			if lexer.CurrentChar == '=' {
+				lexer.advance(1)
+				return token.NewToken(token.GREATER_THAN_OR_EQUAL, ">=")
+			}
+
+			return token.NewToken(token.GREATER_THAN, ">")
+		}
+
+		// MODULO
+		if lexer.CurrentChar == '%' {
+			lexer.advance(1)
+
+			// MODULO ASSIGN
+			if lexer.CurrentChar == '=' {
+				lexer.advance(1)
+
+				return token.NewToken(token.MODULO_ASSIGN, "%=")
+			}
+
+			return token.NewToken(token.MODULO, "%")
+		}
+
+		// BITWISE AND
+		if lexer.CurrentChar == '&' {
+			lexer.advance(1)
+
+			// LOGICAL AND
+			if lexer.CurrentChar == '&' {
+				lexer.advance(1)
+
+				// LOGICAL AND ASSIGN
+				if lexer.CurrentChar == '=' {
+					lexer.advance(1)
+					return token.NewToken(token.LOGICAL_AND_ASSIGN, "&&=")
+				}
+
+				return token.NewToken(token.LOGICAL_AND, "&&")
+			}
+
+			// BITWISE AND ASSIGN
+			if lexer.CurrentChar == '=' {
+				lexer.advance(1)
+				return token.NewToken(token.BITWISE_AND_ASSIGN, "&=")
+			}
+
+			return token.NewToken(token.BITWISE_AND, "&")
+		}
+
+		// BITWISE OR
+		if lexer.CurrentChar == '|' {
+			lexer.advance(1)
+
+			// LOGICAL OR
+			if lexer.CurrentChar == '|' {
+				lexer.advance(1)
+
+				// LOGICAL OR ASSIGN
+				if lexer.CurrentChar == '=' {
+					lexer.advance(1)
+					return token.NewToken(token.LOGICAL_OR_ASSIGN, "||=")
+				}
+
+				return token.NewToken(token.LOGICAL_OR, "||")
+			}
+
+			// BITWISE OR ASSIGN
+			if lexer.CurrentChar == '=' {
+				lexer.advance(1)
+				return token.NewToken(token.BITWISE_OR_ASSIGN, "|=")
+			}
+
+			return token.NewToken(token.BITWISE_OR, "|")
+		}
+
+		// BITWISE XOR
+		if lexer.CurrentChar == '^' {
+			lexer.advance(1)
+
+			// BITWISE XOR ASSIGN
+			if lexer.CurrentChar == '=' {
+				lexer.advance(1)
+				return token.NewToken(token.BITWISE_XOR_ASSIGN, "^=")
+			}
+
+			return token.NewToken(token.BITWISE_XOR, "|")
+		}
+
+		// LOGICAL NOT
+		if lexer.CurrentChar == '!' {
+			lexer.advance(1)
+
+			// INEQUALITY
+			if lexer.CurrentChar == '=' {
+				lexer.advance(1)
+
+				// STRICT INEQUALITY
+				if lexer.CurrentChar == '=' {
+					lexer.advance(1)
+					return token.NewToken(token.STRICT_INEQUALITY, "!==")
+				}
+
+				return token.NewToken(token.INEQUALITY, "!=")
+			}
+
+			return token.NewToken(token.LOGICAL_NOT, "!")
+		}
+
+		// NULLISH
+		if lexer.CurrentChar == '?' && lexer.peek(1) == '?' {
+			lexer.advance(2)
+
+			// LOGICAL NULLISH ASSIGN
+			if lexer.CurrentChar == '=' {
+				lexer.advance(1)
+				return token.NewToken(token.LOGICAL_NULLISH_ASSIGN, "??=")
+			}
+
+			return token.NewToken(token.NULLISH, "??")
+		}
+
+		// OPTIONAL CHAINING
+		if lexer.CurrentChar == '?' && lexer.peek(1) == '.' {
+			lexer.advance(2)
+			return token.NewToken(token.OPTIONAL_CHAINING, "?.")
+		}
+
+		// BITWISE NOT
+		if lexer.CurrentChar == '~' {
+			lexer.advance(1)
+			return token.NewToken(token.BITWISE_NOT, "~")
 		}
 
 		if lexer.CurrentChar == '(' {
-			lexer.advance()
+			lexer.advance(1)
 			return token.NewToken(token.LPAREN, "(")
 		}
 
 		if lexer.CurrentChar == ')' {
-			lexer.advance()
+			lexer.advance(1)
 			return token.NewToken(token.RPAREN, ")")
+		}
+
+		if lexer.CurrentChar == '[' {
+			lexer.advance(1)
+			return token.NewToken(token.LBRACKET, "[")
+		}
+
+		if lexer.CurrentChar == ']' {
+			lexer.advance(1)
+			return token.NewToken(token.RBRACKET, "]")
+		}
+
+		if lexer.CurrentChar == '{' {
+			lexer.advance(1)
+			return token.NewToken(token.LBRACE, "{")
+		}
+
+		if lexer.CurrentChar == '}' {
+			lexer.advance(1)
+			return token.NewToken(token.RBRACE, "}")
+		}
+
+		if lexer.CurrentChar == '"' {
+			lexer.advance(1)
+			return token.NewToken(token.DOUBLE_QUOTE, "\"")
+		}
+
+		if lexer.CurrentChar == '\'' {
+			lexer.advance(1)
+			return token.NewToken(token.SINGLE_QUOTE, "'")
+		}
+
+		if lexer.CurrentChar == '`' {
+			lexer.advance(1)
+			return token.NewToken(token.BACKTICK, "`")
+		}
+
+		if lexer.CurrentChar == '#' {
+			lexer.advance(1)
+			return token.NewToken(token.POUND, "#")
+		}
+
+		if lexer.CurrentChar == '$' {
+			lexer.advance(1)
+			return token.NewToken(token.DOLLAR, "$")
 		}
 	}
 	return token.NewToken(token.EOF, 0)
@@ -95,14 +435,14 @@ func (lexer *Lexer) GetNextToken() *token.Token {
 // Skips any whitespace picked up by the lexer.
 func (lexer *Lexer) whitespace() {
 	for lexer.CurrentChar != 0 && unicode.IsWhitespace(lexer.CurrentChar) {
-		lexer.advance()
+		lexer.advance(1)
 	}
 }
 
 // advance :
-// Advance the lexer to the next character in Text.
-func (lexer *Lexer) advance() {
-	lexer.Pos++
+// Advance the lexer to the next dth character in Text.
+func (lexer *Lexer) advance(d int) {
+	lexer.Pos += d
 	if lexer.Pos > len(lexer.Text)-1 {
 		lexer.CurrentChar = 0
 	} else {
@@ -111,9 +451,9 @@ func (lexer *Lexer) advance() {
 }
 
 // peek :
-// Get the next character in Text without incrementing the iterator.
-func (lexer *Lexer) peek() rune {
-	peekPos := lexer.Pos + 1
+// Get the dth character in Text from Pos without incrementing the iterator.
+func (lexer *Lexer) peek(d int) rune {
+	peekPos := lexer.Pos + d
 	if peekPos > len(lexer.Text)-1 {
 		return 0
 	}

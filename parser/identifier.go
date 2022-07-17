@@ -2,30 +2,56 @@ package parser
 
 import (
 	"duck/ling/lexer/token"
+	"duck/ling/parser/ast"
 )
 
-// parseIdentifier :
-// Parses an ECMA identifier appropriately. Keywords are also managed here.
-func (parser *Parser) parseIdentifier() *token.Token {
-	result := ""
-	//for parser.CurrentChar != 0 && literal.IsAlphaNumeric(parser.CurrentChar) {
-	//	result += string(parser.CurrentChar)
-	//	parser.advance()
-	//}
-	//
-	//k1 := keyword.GetReservedKeyword(result)
-	//if k1 != keyword.RKNOTFOUND {
-	//	if k1 == keyword.VAR {
-	//		// If we have a var keyword, we want to parse a variable statement.
-	//		return parser.parseVariableStatement()
-	//	}
-	//	return token.NewToken(token.KEYWORD, k1)
-	//}
-	//
-	//k2 := keyword.GetStrictReservedKeyword(result)
-	//if k2 != keyword.SRKNOTFOUND {
-	//	return token.NewToken(token.KEYWORD, k2)
-	//}
+// parseIdentifierReference :
+// Parses an identifier reference.
+//
+//	IdentifierReference : Identifier
+//	                    | yield
+//	                    | await
+// https://tc39.es/ecma262/#prod-IdentifierReference
+func (parser *Parser) parseIdentifierReference() *ast.Node {
+	if parser.CurrentToken.Type == token.KEYWORD {
+		// TODO handle await and yield
+	}
+	return parser.parseIdentifier()
+}
 
-	return token.NewToken(token.IDENTIFIER, result)
+// parseBindingIdentifier :
+// Parses a binding identifier.
+//
+// 	BindingIdentifier : Identifier
+//	                  | yield
+//	                  | await
+// https://tc39.es/ecma262/#prod-BindingIdentifier
+func (parser *Parser) parseBindingIdentifier() *ast.Node {
+	if parser.CurrentToken.Type == token.KEYWORD {
+		// TODO handle await and yield
+	}
+	return parser.parseIdentifier()
+}
+
+// parseLabelIdentifier :
+// Parses a label identifier.
+//
+//	LabelIdentifier : Identifier
+//	               | yield
+//	               | await
+// https://tc39.es/ecma262/#prod-LabelIdentifier
+func (parser *Parser) parseLabelIdentifier() *ast.Node {
+	if parser.CurrentToken.Type == token.KEYWORD {
+		// TODO handle await and yield
+	}
+	return parser.parseIdentifier()
+}
+
+// parseIdentifier :
+// Parses an identifier.
+//
+// 	Identifier : IdentifierName but not ReservedKeyword
+// https://tc39.es/ecma262/#prod-Identifier
+func (parser *Parser) parseIdentifier() *ast.Node {
+	return nil
 }

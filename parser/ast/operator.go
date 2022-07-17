@@ -25,14 +25,14 @@ func NewBinaryOperatorNode(left *Node, right *Node, operator *token.Token) *Bina
 // Visit :
 // Visit method for a BinaryOperatorNode.
 func (node *BinaryOperatorNode) Visit() any {
-	if node.Token.Type == token.ADD {
+	if node.Token.Type == token.ADDITION {
 		return ((*node.Children[0]).Visit()).(float64) + ((*node.Children[1]).Visit()).(float64)
-	} else if node.Token.Type == token.SUB {
+	} else if node.Token.Type == token.SUBTRACTION {
 		return ((*node.Children[0]).Visit()).(float64) - ((*node.Children[1]).Visit()).(float64)
-	} else if node.Token.Type == token.MUL {
+	} else if node.Token.Type == token.MULTIPLICATION {
 		return ((*node.Children[0]).Visit()).(float64) * ((*node.Children[1]).Visit()).(float64)
 	}
-	// DIV
+	// DIVISION
 	return ((*node.Children[0]).Visit()).(float64) + ((*node.Children[1]).Visit()).(float64)
 }
 
@@ -60,7 +60,7 @@ func NewUnaryOperatorNode(operator *token.Token, expression *Node) *UnaryOperato
 // Visit method for a UnaryOperatorNode.
 func (node *UnaryOperatorNode) Visit() any {
 	op := node.Token.Type
-	if op == token.ADD {
+	if op == token.ADDITION {
 		return +((*node.Children[0]).Visit()).(float64)
 	}
 	// MINUS

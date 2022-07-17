@@ -35,7 +35,7 @@ func (parser *Parser) eat(tokenType token.Type) {
 // Parse :
 // Get the next token.
 func (parser *Parser) Parse() *ast.Node {
-	return parser.parseExpression()
+	return parser.parseExpression1()
 }
 
 func Visit(root *ast.Node) {
