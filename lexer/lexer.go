@@ -8,6 +8,7 @@ import (
 	"ling/syntax/unicode"
 	"log"
 	"os"
+	"unicode/utf8"
 )
 
 const chunkSize = 10                          // TODO intuitive chunkSize selection?
@@ -488,7 +489,7 @@ func (lexer *Lexer) advance(d int) {
 			r, _, err = lexer.File.ReadRune()
 			if err != nil {
 				// TODO error handling
-				log.Fatal(fmt.Sprintf("HI COLIN %v", err))
+				log.Fatal(fmt.Sprintf("%v", err))
 			}
 		}
 		lexer.CurrentChar = r
@@ -506,8 +507,15 @@ func (lexer *Lexer) advance(d int) {
 // Get the dth character in Text from Pos without incrementing the iterator.
 func (lexer *Lexer) peek(d int) rune {
 	if lexer.IsFile {
-		// TODO
-		return 0
+		peekBytes := 0
+		var dec rune
+		var actualBytes int
+		for i := 1; i < d; i++ {
+			bytesRead, _ := lexer.File.Peek(actualBytes + 4) // peek max amount of utf8 bytes
+			dec, actualBytes = utf8.DecodeRune(bytesRead)
+			peekBytes += actualBytes
+		}
+		return dec
 	}
 
 	peekPos := lexer.Pos + d
