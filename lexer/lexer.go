@@ -2,8 +2,6 @@ package lexer
 
 import (
 	"bufio"
-	go_unicode "golang.org/x/text/encoding/unicode"
-	"golang.org/x/text/transform"
 	"ling/lexer/token"
 	"ling/syntax/literal"
 	"ling/syntax/unicode"
@@ -49,9 +47,6 @@ func NewLexerFile(fileName string) *Lexer {
 		IsFile: true,
 	}
 
-	// Js files support utf-16, which means we need to too...
-	codec := go_unicode.UTF16(go_unicode.BigEndian, go_unicode.UseBOM)
-
 	f, err := os.Open(fileName)
 	if err != nil {
 		// TODO error handling
@@ -67,9 +62,7 @@ func NewLexerFile(fileName string) *Lexer {
 		}
 	}(f)
 
-	rd := transform.NewReader(f, codec.NewDecoder())
-
-	lex.File = bufio.NewReaderSize(rd, cacheSize)
+	lex.File = bufio.NewReaderSize(f, cacheSize)
 	return lex
 }
 
