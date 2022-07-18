@@ -99,6 +99,7 @@ func (parser *Parser) parseStatementList() []*ast.Node {
 	}
 
 	for parser.CurrentToken.Type != token.EOF && parser.CurrentToken.Type != token.RBRACE {
+		parser.CurrentToken = parser.Lexer.GetNextToken()
 		nodes = append(nodes, parser.parseStatementListItem())
 	}
 
