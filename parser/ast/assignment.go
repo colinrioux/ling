@@ -14,10 +14,10 @@ type AssignmentNode Node
 
 // NewAssignmentNode :
 // Create a new assignment node.
-func NewAssignmentNode(left *VariableNode, operator *token.Token, right *Node) *AssignmentNode {
+func NewAssignmentNode(variable *VariableNode, operator *token.Token, expression *Node) *AssignmentNode {
 	return &AssignmentNode{
 		Type:     AssignmentNodeType,
-		Children: []*Node{(*Node)(left), right},
+		Children: []*Node{(*Node)(variable), expression},
 		Token:    operator,
 	}
 }

@@ -34,17 +34,23 @@ func (node *Node) Visit() interface{} {
 		return (*BinaryOperatorNode)(node).Visit()
 	case UnaryOperatorNodeType:
 		return (*UnaryOperatorNode)(node).Visit()
+	case BlockNodeType:
+		return (*BlockNode)(node).Visit()
 	}
 	return nil
 }
 
 func (node *Node) String() string {
-	return fmt.Sprintf("ASTNode(%v,%v)", node.ChildrenToString(), *node.Token)
+	return fmt.Sprintf("ASTNode(%v,%v)", node.ChildrenToString(), node.Token)
 }
 
 func (node *Node) ChildrenToString() string {
 	str := "Children("
 	for i, child := range node.Children {
+		if child == nil {
+			str += string(rune(i)) + "=nil,"
+			continue
+		}
 		str += string(rune(i)) + "=" + child.String() + ","
 	}
 	str += ")"

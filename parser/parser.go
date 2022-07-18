@@ -35,14 +35,32 @@ func (parser *Parser) eat(tokenType token.Type) {
 // Parse :
 // Get the next token.
 func (parser *Parser) Parse() *ast.Node {
-	return parser.parseExpression1()
+	return parser.parseProgram()
+}
+
+// parseProgram :
+// Parses a program.
+// A program starts as a global statement list.
+func (parser *Parser) parseProgram() *ast.Node {
+	nodes := parser.parseStatementList()
+
+	// Build the AST node for the global block
+	root := ast.NewBlockNode()
+	for _, node := range nodes {
+		root.Children = append(root.Children, node)
+	}
+
+	return (*ast.Node)(root)
 }
 
 func Visit(root *ast.Node) {
 	if root == nil {
 		return
 	}
-	Visit((*root).Children[0])
-	Visit((*root).Children[1])
+	for _, child := range (*root).Children {
+		Visit(child)
+	}
+	//Visit((*root).Children[0])
+	//Visit((*root).Children[1])
 	fmt.Println((*root).Token)
 }

@@ -18,11 +18,16 @@ type Lexer struct {
 // NewLexer :
 // Creates a new lexer.
 func NewLexer(text string) *Lexer {
-	return &Lexer{
-		Pos:         0,
-		CurrentChar: rune(text[0]),
-		Text:        text,
+	var lex = &Lexer{
+		Pos:  0,
+		Text: text,
 	}
+	if len(text) > 0 {
+		lex.CurrentChar = rune(text[0])
+	} else {
+		lex.CurrentChar = 0
+	}
+	return lex
 }
 
 // GetNextToken :

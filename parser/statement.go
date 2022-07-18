@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"fmt"
+	"ling/lexer/keyword"
 	"ling/lexer/token"
 	"ling/parser/ast"
 )
@@ -24,6 +26,12 @@ import (
 //	           | DebuggerStatement
 // https://tc39.es/ecma262/#prod-Statement
 func (parser *Parser) parseStatement() *ast.Node {
+	if parser.CurrentToken == nil {
+		// TODO error handling
+		fmt.Println("invalid syntax ps")
+		return nil
+	}
+
 	if parser.CurrentToken.Type == token.LBRACE {
 		return parser.parseBlockStatement()
 	}
@@ -36,6 +44,11 @@ func (parser *Parser) parseStatement() *ast.Node {
 // 	EmptyStatement : ;
 // https://tc39.es/ecma262/#prod-EmptyStatement
 func (parser *Parser) parseEmptyStatement() *ast.Node {
+	if parser.CurrentToken == nil {
+		// TODO error handling
+		fmt.Println("invalid syntax pes")
+		return nil
+	}
 	parser.eat(token.SEMICOLON)
 	return (*ast.Node)(&ast.EmptyNode{})
 }
@@ -79,7 +92,13 @@ func (parser *Parser) parseStatementList() []*ast.Node {
 	nodes := []*ast.Node{node}
 
 	// Parse additional items if there are any.
-	for parser.CurrentToken.Type != token.RBRACE {
+	if parser.CurrentToken == nil {
+		// TODO error handling
+		fmt.Println("invalid syntax psl")
+		return nodes
+	}
+
+	for parser.CurrentToken.Type != token.EOF && parser.CurrentToken.Type != token.RBRACE {
 		nodes = append(nodes, parser.parseStatementListItem())
 	}
 
@@ -98,17 +117,16 @@ func (parser *Parser) parseStatementListItem() *ast.Node {
 }
 
 // parseVariableStatement :
-// "var" variables are scoped to the running execution context.
-// If declared, they are instantiated as undefined.
+// Parses a variable statement.
+//
+//	VariableStatement : var VariableDeclarationList
 // https://tc39.es/ecma262/#sec-variable-statement
-// TODO update comment
+// https://tc39.es/ecma262/#prod-VariableStatement
 func (parser *Parser) parseVariableStatement() *ast.Node {
-	// Get the variable name.
-	//nameToken := parser.parseNextToken()
-	//if nameToken.Type != token.IDENTIFIER {
-	//	// TODO throw error, incorrect
-	//	return nil
-	//}
-	//return (*ast.Node)(ast.NewVariableNode())
+	if parser.CurrentToken.Type == token.KEYWORD && parser.CurrentToken.Value == keyword.VAR {
+		parser.eat(token.KEYWORD)
+		//nodes := parser.parseVariableDeclarationList()
+		// TODO push variable decls onto ast somehow?
+	}
 	return nil
 }

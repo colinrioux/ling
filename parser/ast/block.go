@@ -19,3 +19,14 @@ func NewBlockNode() *BlockNode {
 func (node *BlockNode) String() string {
 	return fmt.Sprintf("BlockNode(%v)", (*Node)(node).ChildrenToString())
 }
+
+// Visit :
+// Visit method for BlockNode.
+func (node *BlockNode) Visit() interface{} {
+	for _, child := range node.Children {
+		if child != nil {
+			child.Visit()
+		}
+	}
+	return nil
+}
