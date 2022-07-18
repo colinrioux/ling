@@ -59,13 +59,17 @@ func (node *Node) String() string {
 }
 
 func (node *Node) ChildrenToString() string {
+	m := len(node.Children)
 	str := "Children("
 	for i, child := range node.Children {
 		if child == nil {
-			str += string(rune(i)) + "=nil,"
+			str += fmt.Sprintf("%d=nil", i)
 			continue
 		}
-		str += string(rune(i)) + "=" + child.String() + ","
+		str += fmt.Sprintf("%d=%v", i, child)
+		if i != m-1 {
+			str += ","
+		}
 	}
 	str += ")"
 	return str
