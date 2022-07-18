@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"duck/ling/lexer/keyword"
-	"duck/ling/lexer/token"
-	"duck/ling/parser/ast"
+	"ling/lexer/keyword"
+	"ling/lexer/token"
+	"ling/parser/ast"
 )
 
 func (parser *Parser) factor() *ast.Node {

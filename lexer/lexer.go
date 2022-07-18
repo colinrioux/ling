@@ -1,9 +1,9 @@
 package lexer
 
 import (
-	"duck/ling/lexer/token"
-	"duck/ling/syntax/literal"
-	"duck/ling/syntax/unicode"
+	"ling/lexer/token"
+	"ling/syntax/literal"
+	"ling/syntax/unicode"
 )
 
 // Lexer :

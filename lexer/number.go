@@ -1,8 +1,8 @@
 package lexer
 
 import (
-	"duck/ling/lexer/token"
-	"duck/ling/syntax/literal"
+	"ling/lexer/token"
+	"ling/syntax/literal"
 	"strconv"
 )
 

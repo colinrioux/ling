@@ -1,8 +1,8 @@
 package unicode
 
 import (
-	"duck/ling/util"
 	"fmt"
+	"ling/util"
 	"math"
 )
 

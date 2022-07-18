@@ -1,8 +1,8 @@
 package ast
 
 import (
-	"duck/ling/lexer/token"
 	"fmt"
+	"ling/lexer/token"
 )
 
 // NumberNode :

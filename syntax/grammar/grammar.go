@@ -1,7 +1,7 @@
 package grammar
 
 import (
-	"duck/ling/syntax/unicode"
+	"ling/syntax/unicode"
 )
 
 type NonTerminalType uint32

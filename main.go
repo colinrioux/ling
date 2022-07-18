@@ -1,8 +1,8 @@
 package main
 
 import (
-	"duck/ling/parser"
 	"fmt"
+	"ling/parser"
 )
 
 func main() {

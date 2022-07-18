@@ -1,8 +1,8 @@
 package context
 
 import (
-	"duck/ling/parser/ast"
-	"duck/ling/syntax/type"
+	"ling/parser/ast"
+	"ling/syntax/type"
 )
 
 // Realm :

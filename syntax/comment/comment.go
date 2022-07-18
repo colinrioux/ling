@@ -1,7 +1,7 @@
 package comment
 
 import (
-	"duck/ling/syntax/unicode"
+	"ling/syntax/unicode"
 )
 
 // SingleLineCommentChar :

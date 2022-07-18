@@ -1,10 +1,10 @@
 package parser
 
 import (
-	"duck/ling/lexer"
-	"duck/ling/lexer/token"
-	"duck/ling/parser/ast"
 	"fmt"
+	"ling/lexer"
+	"ling/lexer/token"
+	"ling/parser/ast"
 )
 
 // Parser :

@@ -1,6 +1,6 @@
 package literal
 
-import "duck/ling/util"
+import "ling/util"
 
 // Null Literal. https://tc39.es/ecma262/#sec-ecmascript-language-lexical-grammar-literals
 const (

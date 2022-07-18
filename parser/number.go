@@ -1,6 +1,6 @@
 package parser
 
-import "duck/ling/parser/ast"
+import "ling/parser/ast"
 
 // parseNumber :
 func (parser *Parser) parseNumber() *ast.Node {

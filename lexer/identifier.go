@@ -1,9 +1,9 @@
 package lexer
 
 import (
-	"duck/ling/lexer/keyword"
-	"duck/ling/lexer/token"
-	"duck/ling/syntax/literal"
+	"ling/lexer/keyword"
+	"ling/lexer/token"
+	"ling/syntax/literal"
 )
 
 // getIdentifierOrKeyword :

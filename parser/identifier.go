@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"duck/ling/lexer/token"
-	"duck/ling/parser/ast"
+	"ling/lexer/token"
+	"ling/parser/ast"
 )
 
 // parseIdentifierReference :
