@@ -1,10 +1,18 @@
 package lexer
 
 import (
+	"bufio"
+	go_unicode "golang.org/x/text/encoding/unicode"
+	"golang.org/x/text/transform"
 	"ling/lexer/token"
 	"ling/syntax/literal"
 	"ling/syntax/unicode"
+	"log"
+	"os"
 )
+
+const chunkSize = 10                          // TODO intuitive chunkSize selection?
+const cacheSize = chunkSize + (chunkSize / 2) // TODO can we do better?
 
 // Lexer :
 // A type to represent an ECMA lexer. The lexer scans the
@@ -13,20 +21,57 @@ type Lexer struct {
 	Pos         int
 	CurrentChar rune
 	Text        string
+	IsFile      bool
+	File        *bufio.Reader
+	//FileCache     []byte // chunkSize + peekAmt=chunkSize/2 TODO can we do better?
+	//FileCacheSize int    // TODO can we use a type for file caches?
 }
 
-// NewLexer :
-// Creates a new lexer.
-func NewLexer(text string) *Lexer {
+// NewLexerString :
+// Creates a new lexer with string input.
+func NewLexerString(text string) *Lexer {
 	var lex = &Lexer{
-		Pos:  0,
-		Text: text,
+		Pos:    0,
+		Text:   text,
+		IsFile: false,
 	}
 	if len(text) > 0 {
 		lex.CurrentChar = rune(text[0])
 	} else {
 		lex.CurrentChar = 0
 	}
+	return lex
+}
+
+// NewLexerFile :
+// Creates a new lexer with file input.
+func NewLexerFile(fileName string) *Lexer {
+	var lex = &Lexer{
+		Pos:    0,
+		IsFile: true,
+	}
+
+	// Js files support utf-16, which means we need to too...
+	codec := go_unicode.UTF16(go_unicode.BigEndian, go_unicode.UseBOM)
+
+	f, err := os.Open(fileName)
+	if err != nil {
+		// TODO error handling
+		log.Fatal(err)
+		return nil
+	}
+
+	defer func(f *os.File) {
+		err := f.Close()
+		if err != nil {
+			// TODO error handling
+			log.Fatal(err)
+		}
+	}(f)
+
+	rd := transform.NewReader(f, codec.NewDecoder())
+
+	lex.File = bufio.NewReaderSize(rd, cacheSize)
 	return lex
 }
 
@@ -447,6 +492,20 @@ func (lexer *Lexer) whitespace() {
 // advance :
 // Advance the lexer to the next dth character in Text.
 func (lexer *Lexer) advance(d int) {
+	newPos := lexer.Pos + d
+
+	if lexer.IsFile {
+		// TODO can we do better?
+		newCacheIdx := newPos % cacheSize
+		oldCacheIdx := lexer.Pos % cacheSize
+
+		// we know we are in a new cache line
+		if newCacheIdx <= oldCacheIdx {
+
+		}
+		return
+	}
+
 	lexer.Pos += d
 	if lexer.Pos > len(lexer.Text)-1 {
 		lexer.CurrentChar = 0
@@ -458,6 +517,10 @@ func (lexer *Lexer) advance(d int) {
 // peek :
 // Get the dth character in Text from Pos without incrementing the iterator.
 func (lexer *Lexer) peek(d int) rune {
+	if lexer.IsFile {
+		return 0
+	}
+
 	peekPos := lexer.Pos + d
 	if peekPos > len(lexer.Text)-1 {
 		return 0

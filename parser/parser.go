@@ -14,11 +14,21 @@ type Parser struct {
 	Lexer        *lexer.Lexer
 }
 
-// NewParser :
-// Create a new ECMA parser.
-func NewParser(text string) *Parser {
-	var p *Parser = &Parser{
-		Lexer: lexer.NewLexer(text),
+// NewParserString :
+// Create a new ECMA parser, that takes input as a string.
+func NewParserString(text string) *Parser {
+	var p = &Parser{
+		Lexer: lexer.NewLexerString(text),
+	}
+	p.CurrentToken = p.Lexer.GetNextToken()
+	return p
+}
+
+// NewParserFile :
+// Create a new ECMA parser, that takes input as a file.
+func NewParserFile() *Parser {
+	var p = &Parser{
+		Lexer: lexer.NewLexerString(""),
 	}
 	p.CurrentToken = p.Lexer.GetNextToken()
 	return p

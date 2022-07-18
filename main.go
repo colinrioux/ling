@@ -6,14 +6,14 @@ import (
 )
 
 func main() {
-	//psr := parser.NewParser("var x = \"hi\"")
-	psr := parser.NewParser("{}")
+	//psr := parser.NewParserString("var x = \"hi\"")
+	psr := parser.NewParserString("{}")
 	fmt.Println(psr.Lexer.Text)
 	fmt.Printf("Len of text: %d\n", len(psr.Lexer.Text))
 	//fmt.Println(psr.CurrentToken)
 	tree := psr.Parse()
 	if tree != nil {
-		fmt.Printf("%v : %v\n", tree.String(), tree.Visit())
+		fmt.Printf("Tree: %v ; Visit Result:%v\n", tree.String(), tree.Visit())
 	}
 
 	//nde := parser.expression()
