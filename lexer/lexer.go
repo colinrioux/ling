@@ -23,8 +23,6 @@ type Lexer struct {
 	Text        string
 	IsFile      bool
 	File        *bufio.Reader
-	//FileCache     []byte // chunkSize + peekAmt=chunkSize/2 TODO can we do better?
-	//FileCacheSize int    // TODO can we use a type for file caches?
 }
 
 // NewLexerString :
@@ -492,21 +490,23 @@ func (lexer *Lexer) whitespace() {
 // advance :
 // Advance the lexer to the next dth character in Text.
 func (lexer *Lexer) advance(d int) {
-	newPos := lexer.Pos + d
+	lexer.Pos += d
 
 	if lexer.IsFile {
-		// TODO can we do better?
-		newCacheIdx := newPos % cacheSize
-		oldCacheIdx := lexer.Pos % cacheSize
-
-		// we know we are in a new cache line
-		if newCacheIdx <= oldCacheIdx {
-
-		}
+		//var r rune
+		//var err error
+		//for i := 0; i < d; i++ {
+		//	r, _, err = lexer.File.ReadRune()
+		//	if err != nil {
+		//		// TODO error handling
+		//		log.Fatal(err)
+		//	}
+		//}
+		//lexer.CurrentChar = r
+		// TODO
 		return
 	}
 
-	lexer.Pos += d
 	if lexer.Pos > len(lexer.Text)-1 {
 		lexer.CurrentChar = 0
 	} else {
@@ -518,6 +518,7 @@ func (lexer *Lexer) advance(d int) {
 // Get the dth character in Text from Pos without incrementing the iterator.
 func (lexer *Lexer) peek(d int) rune {
 	if lexer.IsFile {
+		// TODO
 		return 0
 	}
 
