@@ -26,9 +26,9 @@ func NewParserString(text string) *Parser {
 
 // NewParserFile :
 // Create a new ECMA parser, that takes input as a file.
-func NewParserFile() *Parser {
+func NewParserFile(fileName string) *Parser {
 	var p = &Parser{
-		Lexer: lexer.NewLexerString(""),
+		Lexer: lexer.NewLexerFile(fileName),
 	}
 	p.CurrentToken = p.Lexer.GetNextToken()
 	return p

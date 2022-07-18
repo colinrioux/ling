@@ -2,6 +2,7 @@ package lexer
 
 import (
 	"bufio"
+	"fmt"
 	"ling/lexer/token"
 	"ling/syntax/literal"
 	"ling/syntax/unicode"
@@ -54,15 +55,10 @@ func NewLexerFile(fileName string) *Lexer {
 		return nil
 	}
 
-	defer func(f *os.File) {
-		err := f.Close()
-		if err != nil {
-			// TODO error handling
-			log.Fatal(err)
-		}
-	}(f)
+	//defer f.Close()
 
 	lex.File = bufio.NewReaderSize(f, cacheSize)
+	lex.CurrentChar, _, _ = lex.File.ReadRune()
 	return lex
 }
 
@@ -486,17 +482,16 @@ func (lexer *Lexer) advance(d int) {
 	lexer.Pos += d
 
 	if lexer.IsFile {
-		//var r rune
-		//var err error
-		//for i := 0; i < d; i++ {
-		//	r, _, err = lexer.File.ReadRune()
-		//	if err != nil {
-		//		// TODO error handling
-		//		log.Fatal(err)
-		//	}
-		//}
-		//lexer.CurrentChar = r
-		// TODO
+		var r rune
+		var err error
+		for i := 1; i < d; i++ {
+			r, _, err = lexer.File.ReadRune()
+			if err != nil {
+				// TODO error handling
+				log.Fatal(fmt.Sprintf("HI COLIN %v", err))
+			}
+		}
+		lexer.CurrentChar = r
 		return
 	}
 

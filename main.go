@@ -7,10 +7,11 @@ import (
 
 func main() {
 	//psr := parser.NewParserString("var x = \"hi\"")
-	psr := parser.NewParserString("{}")
-	fmt.Println(psr.Lexer.Text)
-	fmt.Printf("Len of text: %d\n", len(psr.Lexer.Text))
-	//fmt.Println(psr.CurrentToken)
+	//psr := parser.NewParserString("{}")
+	psr := parser.NewParserFile("test.js")
+	//fmt.Println(psr.Lexer.Text)
+	//fmt.Printf("Len of text: %d\n", len(psr.Lexer.Text))
+	fmt.Println(psr.CurrentToken)
 	tree := psr.Parse()
 	if tree != nil {
 		fmt.Printf("Tree: %v ; Visit Result:%v\n", tree.String(), tree.Visit())
