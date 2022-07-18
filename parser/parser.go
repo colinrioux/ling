@@ -45,7 +45,7 @@ func (parser *Parser) parseProgram() *ast.Node {
 	nodes := parser.parseStatementList()
 
 	// Build the AST node for the global block
-	root := ast.NewBlockNode()
+	root := ast.NewBlockNode1("GLOBAL")
 	for _, node := range nodes {
 		root.Children = append(root.Children, node)
 	}

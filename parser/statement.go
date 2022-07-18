@@ -73,7 +73,7 @@ func (parser *Parser) parseBlock() *ast.Node {
 	parser.eat(token.RBRACE)
 
 	// Build the AST node for the block
-	root := ast.NewBlockNode()
+	root := ast.NewBlockNode2()
 	for _, node := range nodes {
 		root.Children = append(root.Children, node)
 	}

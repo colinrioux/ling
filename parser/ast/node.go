@@ -41,6 +41,20 @@ func (node *Node) Visit() interface{} {
 }
 
 func (node *Node) String() string {
+	switch node.Type {
+	case NumberNodeType:
+		return (*NumberNode)(node).String()
+	case BinaryOperatorNodeType:
+		return (*BinaryOperatorNode)(node).String()
+	case UnaryOperatorNodeType:
+		return (*UnaryOperatorNode)(node).String()
+	case VariableNodeType:
+		return (*VariableNode)(node).String()
+	case AssignmentNodeType:
+		return (*AssignmentNode)(node).String()
+	case BlockNodeType:
+		return (*BlockNode)(node).String()
+	}
 	return fmt.Sprintf("ASTNode(%v,%v)", node.ChildrenToString(), node.Token)
 }
 

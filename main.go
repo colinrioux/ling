@@ -7,7 +7,7 @@ import (
 
 func main() {
 	//psr := parser.NewParser("var x = \"hi\"")
-	psr := parser.NewParser("")
+	psr := parser.NewParser("{}")
 	fmt.Println(psr.Lexer.Text)
 	fmt.Printf("Len of text: %d\n", len(psr.Lexer.Text))
 	//fmt.Println(psr.CurrentToken)
