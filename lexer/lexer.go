@@ -2,7 +2,6 @@ package lexer
 
 import (
 	"bufio"
-	"fmt"
 	"ling/lexer/token"
 	"ling/syntax/literal"
 	"ling/syntax/unicode"
@@ -484,13 +483,14 @@ func (lexer *Lexer) advance(d int) {
 
 	if lexer.IsFile {
 		var r rune
-		var err error
-		for i := 1; i < d; i++ {
-			r, _, err = lexer.File.ReadRune()
-			if err != nil {
-				// TODO error handling
-				log.Fatal(fmt.Sprintf("%v", err))
-			}
+		//var err error
+		for i := 1; i <= d; i++ {
+			r, _, _ = lexer.File.ReadRune()
+			//fmt.Printf("HI COLIN %v\n", r)
+			//if err != nil {
+			//	// TODO error handling
+			//	log.Fatal(fmt.Sprintf("%v", err))
+			//}
 		}
 		lexer.CurrentChar = r
 		return
@@ -510,7 +510,7 @@ func (lexer *Lexer) peek(d int) rune {
 		peekBytes := 0
 		var dec rune
 		var actualBytes int
-		for i := 1; i < d; i++ {
+		for i := 1; i <= d; i++ {
 			bytesRead, _ := lexer.File.Peek(actualBytes + 4) // peek max amount of utf8 bytes
 			dec, actualBytes = utf8.DecodeRune(bytesRead)
 			peekBytes += actualBytes
