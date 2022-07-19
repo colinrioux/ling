@@ -55,8 +55,6 @@ func NewLexerFile(fileName string) *Lexer {
 		return nil
 	}
 
-	//defer f.Close()
-
 	lex.File = bufio.NewReaderSize(f, cacheSize)
 	lex.CurrentChar, _, _ = lex.File.ReadRune()
 	return lex

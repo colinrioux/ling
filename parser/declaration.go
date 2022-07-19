@@ -42,5 +42,9 @@ func (parser *Parser) parseVariableDeclarationList() []*ast.Node {
 // https://tc39.es/ecma262/#prod-VariableDeclaration
 func (parser *Parser) parseVariableDeclaration() *ast.Node {
 	// TODO
+	//// BindingIdentifier
+	//if parser.CurrentToken.Type == token.IDENTIFIER {
+	//	return parser.parseBindingIdentifier()
+	//}
 	return nil
 }

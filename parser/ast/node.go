@@ -54,6 +54,8 @@ func (node *Node) String() string {
 		return (*AssignmentNode)(node).String()
 	case BlockNodeType:
 		return (*BlockNode)(node).String()
+	case VariableDeclarationNodeType:
+		return (*VariableDeclarationNode)(node).String()
 	}
 	return fmt.Sprintf("ASTNode(%v,%v)", node.ChildrenToString(), node.Token)
 }
@@ -85,6 +87,7 @@ const (
 	VariableNodeType
 	AssignmentNodeType
 	BlockNodeType
+	VariableDeclarationNodeType
 )
 
 // EmptyNode :

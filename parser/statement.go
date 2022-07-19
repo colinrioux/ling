@@ -5,6 +5,7 @@ import (
 	"ling/lexer/keyword"
 	"ling/lexer/token"
 	"ling/parser/ast"
+	"log"
 )
 
 // parseStatement :
@@ -28,12 +29,14 @@ import (
 func (parser *Parser) parseStatement() *ast.Node {
 	if parser.CurrentToken == nil {
 		// TODO error handling
-		fmt.Println("invalid syntax ps")
+		log.Println("invalid syntax ps")
 		return nil
 	}
 
 	if parser.CurrentToken.Type == token.LBRACE {
 		return parser.parseBlockStatement()
+	} else if parser.CurrentToken.Type == token.KEYWORD && parser.CurrentToken.Value == keyword.VAR {
+		return parser.parseVariableStatement()
 	}
 	return parser.parseEmptyStatement()
 }
@@ -46,7 +49,7 @@ func (parser *Parser) parseStatement() *ast.Node {
 func (parser *Parser) parseEmptyStatement() *ast.Node {
 	if parser.CurrentToken == nil {
 		// TODO error handling
-		fmt.Println("invalid syntax pes")
+		log.Println("invalid syntax pes")
 		return nil
 	}
 	parser.eat(token.SEMICOLON)
@@ -124,10 +127,13 @@ func (parser *Parser) parseStatementListItem() *ast.Node {
 // https://tc39.es/ecma262/#sec-variable-statement
 // https://tc39.es/ecma262/#prod-VariableStatement
 func (parser *Parser) parseVariableStatement() *ast.Node {
+	node := ast.NewVariableDeclarationNode()
 	if parser.CurrentToken.Type == token.KEYWORD && parser.CurrentToken.Value == keyword.VAR {
 		parser.eat(token.KEYWORD)
-		//nodes := parser.parseVariableDeclarationList()
-		// TODO push variable decls onto ast somehow?
+		nodes := parser.parseVariableDeclarationList()
+		for _, nde := range nodes {
+			node.AddDeclaration(nde)
+		}
 	}
-	return nil
+	return (*ast.Node)(node)
 }
