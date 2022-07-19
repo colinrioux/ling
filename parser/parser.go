@@ -20,7 +20,7 @@ func NewParserString(text string) *Parser {
 	var p = &Parser{
 		Lexer: lexer.NewLexerString(text),
 	}
-	p.CurrentToken = p.Lexer.GetNextToken()
+	p.CurrentToken, _ = p.Lexer.GetNextToken()
 	return p
 }
 
@@ -30,7 +30,7 @@ func NewParserFile(fileName string) *Parser {
 	var p = &Parser{
 		Lexer: lexer.NewLexerFile(fileName),
 	}
-	p.CurrentToken = p.Lexer.GetNextToken()
+	p.CurrentToken, _ = p.Lexer.GetNextToken()
 	return p
 }
 
@@ -38,7 +38,7 @@ func NewParserFile(fileName string) *Parser {
 // Instruct the parser to eat the CurrentToken if it matches tokenType and get the next token from the lexer.
 func (parser *Parser) eat(tokenType token.Type) {
 	if tokenType == parser.CurrentToken.Type {
-		parser.CurrentToken = parser.Lexer.GetNextToken()
+		parser.CurrentToken, _ = parser.Lexer.GetNextToken()
 	}
 }
 

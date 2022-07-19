@@ -64,10 +64,11 @@ func NewLexerFile(fileName string) *Lexer {
 
 // GetNextToken :
 // Get the next token in the Text.
-func (lexer *Lexer) GetNextToken() *token.Token {
+func (lexer *Lexer) GetNextToken() (*token.Token, int) {
+	advanceAmount := 0
 	for lexer.CurrentChar != 0 {
 		if unicode.IsWhitespace(lexer.CurrentChar) {
-			lexer.whitespace()
+			advanceAmount += lexer.whitespace()
 			continue
 		}
 
@@ -78,47 +79,54 @@ func (lexer *Lexer) GetNextToken() *token.Token {
 
 		// ASSIGN
 		if lexer.CurrentChar == '=' {
-			lexer.advance(1)
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
 
 			// EQUALITY
 			if lexer.CurrentChar == '=' {
-				lexer.advance(1)
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
 
 				// STRICT EQUALITY
 				if lexer.CurrentChar == '=' {
-					lexer.advance(1)
-					return token.NewToken(token.STRICT_EQUALITY, "===")
+					advanceAmount += 1
+					lexer.advance(advanceAmount)
+					return token.NewToken(token.STRICT_EQUALITY, "==="), advanceAmount
 				}
 
-				return token.NewToken(token.EQUALITY, "==")
+				return token.NewToken(token.EQUALITY, "=="), advanceAmount
 			}
 
-			return token.NewToken(token.ASSIGN, "=")
+			return token.NewToken(token.ASSIGN, "="), advanceAmount
 		}
 
 		// SEMICOLON
 		if lexer.CurrentChar == ';' {
-			lexer.advance(1)
-			return token.NewToken(token.SEMICOLON, ";")
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.SEMICOLON, ";"), advanceAmount
 		}
 
 		// COMMA
 		if lexer.CurrentChar == ',' {
-			lexer.advance(1)
-			return token.NewToken(token.COMMA, ",")
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.COMMA, ","), advanceAmount
 		}
 
 		// DOT
 		if lexer.CurrentChar == '.' && !literal.IsDecimalDigit(lexer.peek(1)) {
-			lexer.advance(1)
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
 
 			// SPREAD
 			if lexer.CurrentChar == '.' && lexer.peek(1) == '.' {
-				lexer.advance(2)
-				return token.NewToken(token.SPREAD, "...")
+				advanceAmount += 2
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.SPREAD, "..."), advanceAmount
 			}
 
-			return token.NewToken(token.DOT, ".")
+			return token.NewToken(token.DOT, "."), advanceAmount
 		}
 
 		// Numbers
@@ -128,352 +136,410 @@ func (lexer *Lexer) GetNextToken() *token.Token {
 
 		// ADDITION
 		if lexer.CurrentChar == '+' {
-			lexer.advance(1)
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
 
 			// INCREMENT
 			if lexer.CurrentChar == '+' {
-				lexer.advance(1)
-				return token.NewToken(token.INCREMENT, "++")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.INCREMENT, "++"), advanceAmount
 			}
 
 			// ADDITION ASSIGN
 			if lexer.CurrentChar == '=' {
-				lexer.advance(1)
-				return token.NewToken(token.ADDITION_ASSIGN, "+=")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.ADDITION_ASSIGN, "+="), advanceAmount
 			}
 
-			return token.NewToken(token.ADDITION, "+")
+			return token.NewToken(token.ADDITION, "+"), advanceAmount
 		}
 
 		// SUBTRACTION
 		if lexer.CurrentChar == '-' {
-			lexer.advance(1)
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
 
 			// DECREMENT
 			if lexer.CurrentChar == '-' {
-				lexer.advance(1)
-				return token.NewToken(token.DECREMENT, "--")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.DECREMENT, "--"), advanceAmount
 			}
 
 			// SUBTRACTION ASSIGN
 			if lexer.CurrentChar == '=' {
-				lexer.advance(1)
-				return token.NewToken(token.SUBTRACTION_ASSIGN, "-=")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.SUBTRACTION_ASSIGN, "-="), advanceAmount
 			}
 
-			return token.NewToken(token.SUBTRACTION, "-")
+			return token.NewToken(token.SUBTRACTION, "-"), advanceAmount
 		}
 
 		// MULTIPLICATION
 		if lexer.CurrentChar == '*' {
-			lexer.advance(1)
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
 
 			// EXPONENT
 			if lexer.CurrentChar == '*' {
-				lexer.advance(1)
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
 
 				// EXPONENT ASSIGN
 				if lexer.CurrentChar == '=' {
-					lexer.advance(1)
-					return token.NewToken(token.EXPONENT_ASSIGN, "**=")
+					advanceAmount += 1
+					lexer.advance(advanceAmount)
+					return token.NewToken(token.EXPONENT_ASSIGN, "**="), advanceAmount
 				}
 
-				return token.NewToken(token.EXPONENT, "**")
+				return token.NewToken(token.EXPONENT, "**"), advanceAmount
 			}
 
 			// RIGHT MULTI LINE COMMENT
 			if lexer.CurrentChar == '/' {
-				lexer.advance(1)
-				return token.NewToken(token.RMULTI_LINE_COMMENT, "*/")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.RMULTI_LINE_COMMENT, "*/"), advanceAmount
 			}
 
 			// MULTIPLICATION ASSIGN
 			if lexer.CurrentChar == '=' {
-				lexer.advance(1)
-				return token.NewToken(token.MULTIPLY_ASSIGN, "*=")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.MULTIPLY_ASSIGN, "*="), advanceAmount
 			}
 
-			return token.NewToken(token.MULTIPLICATION, "*")
+			return token.NewToken(token.MULTIPLICATION, "*"), advanceAmount
 		}
 
 		// DIVISION
 		if lexer.CurrentChar == '/' {
-			lexer.advance(1)
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
 
 			// SINGLE LINE COMMENT
 			if lexer.CurrentChar == '/' {
-				lexer.advance(1)
-				return token.NewToken(token.SINGLE_LINE_COMMENT, "//")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.SINGLE_LINE_COMMENT, "//"), advanceAmount
 			}
 
 			// LEFT MULTI LINE COMMENT
 			if lexer.CurrentChar == '*' {
-				lexer.advance(1)
-				return token.NewToken(token.LMULTI_LINE_COMMENT, "/*")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.LMULTI_LINE_COMMENT, "/*"), advanceAmount
 			}
 
 			// DIVISION ASSIGN
 			if lexer.CurrentChar == '=' {
-				lexer.advance(1)
-				return token.NewToken(token.DIVISION_ASSIGN, "/=")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.DIVISION_ASSIGN, "/="), advanceAmount
 			}
 
-			return token.NewToken(token.DIVISION, "/")
+			return token.NewToken(token.DIVISION, "/"), advanceAmount
 		}
 
 		// LESS THAN
 		if lexer.CurrentChar == '<' {
-			lexer.advance(1)
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
 
 			// LEFT SHIFT
 			if lexer.CurrentChar == '<' {
-				lexer.advance(1)
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
 
 				// LEFT SHIFT ASSIGN
 				if lexer.CurrentChar == '=' {
-					lexer.advance(1)
-					return token.NewToken(token.LSHIFT_ASSIGN, "<<=")
+					advanceAmount += 1
+					lexer.advance(advanceAmount)
+					return token.NewToken(token.LSHIFT_ASSIGN, "<<="), advanceAmount
 				}
 
-				return token.NewToken(token.LSHIFT, "<<")
+				return token.NewToken(token.LSHIFT, "<<"), advanceAmount
 			}
 
 			// LESS THAN OR EQUAL
 			if lexer.CurrentChar == '=' {
-				lexer.advance(1)
-				return token.NewToken(token.LESS_THAN_OR_EQUAL, "<=")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.LESS_THAN_OR_EQUAL, "<="), advanceAmount
 			}
 
-			return token.NewToken(token.LESS_THAN, "<")
+			return token.NewToken(token.LESS_THAN, "<"), advanceAmount
 		}
 
 		// GREATER THAN
 		if lexer.CurrentChar == '>' {
-			lexer.advance(1)
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
 
 			// RIGHT SHIFT
 			if lexer.CurrentChar == '>' {
-				lexer.advance(1)
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
 
 				// RIGHT SHIFT ASSIGN
 				if lexer.CurrentChar == '=' {
-					lexer.advance(1)
-					return token.NewToken(token.RSHIFT_ASSIGN, ">>=")
+					advanceAmount += 1
+					lexer.advance(advanceAmount)
+					return token.NewToken(token.RSHIFT_ASSIGN, ">>="), advanceAmount
 				}
 
 				// UNSIGNED RIGHT SHIFT
 				if lexer.CurrentChar == '>' {
-					lexer.advance(1)
+					advanceAmount += 1
+					lexer.advance(advanceAmount)
 
 					// UNSIGNED RIGHT SHIFT ASSIGN
 					if lexer.CurrentChar == '=' {
-						lexer.advance(1)
-						return token.NewToken(token.URSHIFT_ASSIGN, ">>>=")
+						advanceAmount += 1
+						lexer.advance(advanceAmount)
+						return token.NewToken(token.URSHIFT_ASSIGN, ">>>="), advanceAmount
 					}
 
-					return token.NewToken(token.URSHIFT, ">>>")
+					return token.NewToken(token.URSHIFT, ">>>"), advanceAmount
 				}
 
-				return token.NewToken(token.RSHIFT, ">>")
+				return token.NewToken(token.RSHIFT, ">>"), advanceAmount
 			}
 
 			// GREATER THAN OR EQUAL
 			if lexer.CurrentChar == '=' {
-				lexer.advance(1)
-				return token.NewToken(token.GREATER_THAN_OR_EQUAL, ">=")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.GREATER_THAN_OR_EQUAL, ">="), advanceAmount
 			}
 
-			return token.NewToken(token.GREATER_THAN, ">")
+			return token.NewToken(token.GREATER_THAN, ">"), advanceAmount
 		}
 
 		// MODULO
 		if lexer.CurrentChar == '%' {
-			lexer.advance(1)
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
 
 			// MODULO ASSIGN
 			if lexer.CurrentChar == '=' {
-				lexer.advance(1)
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
 
-				return token.NewToken(token.MODULO_ASSIGN, "%=")
+				return token.NewToken(token.MODULO_ASSIGN, "%="), advanceAmount
 			}
 
-			return token.NewToken(token.MODULO, "%")
+			return token.NewToken(token.MODULO, "%"), advanceAmount
 		}
 
 		// BITWISE AND
 		if lexer.CurrentChar == '&' {
-			lexer.advance(1)
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
 
 			// LOGICAL AND
 			if lexer.CurrentChar == '&' {
-				lexer.advance(1)
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
 
 				// LOGICAL AND ASSIGN
 				if lexer.CurrentChar == '=' {
-					lexer.advance(1)
-					return token.NewToken(token.LOGICAL_AND_ASSIGN, "&&=")
+					advanceAmount += 1
+					lexer.advance(advanceAmount)
+					return token.NewToken(token.LOGICAL_AND_ASSIGN, "&&="), advanceAmount
 				}
 
-				return token.NewToken(token.LOGICAL_AND, "&&")
+				return token.NewToken(token.LOGICAL_AND, "&&"), advanceAmount
 			}
 
 			// BITWISE AND ASSIGN
 			if lexer.CurrentChar == '=' {
-				lexer.advance(1)
-				return token.NewToken(token.BITWISE_AND_ASSIGN, "&=")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.BITWISE_AND_ASSIGN, "&="), advanceAmount
 			}
 
-			return token.NewToken(token.BITWISE_AND, "&")
+			return token.NewToken(token.BITWISE_AND, "&"), advanceAmount
 		}
 
 		// BITWISE OR
 		if lexer.CurrentChar == '|' {
-			lexer.advance(1)
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
 
 			// LOGICAL OR
 			if lexer.CurrentChar == '|' {
-				lexer.advance(1)
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
 
 				// LOGICAL OR ASSIGN
 				if lexer.CurrentChar == '=' {
-					lexer.advance(1)
-					return token.NewToken(token.LOGICAL_OR_ASSIGN, "||=")
+					advanceAmount += 1
+					lexer.advance(advanceAmount)
+					return token.NewToken(token.LOGICAL_OR_ASSIGN, "||="), advanceAmount
 				}
 
-				return token.NewToken(token.LOGICAL_OR, "||")
+				return token.NewToken(token.LOGICAL_OR, "||"), advanceAmount
 			}
 
 			// BITWISE OR ASSIGN
 			if lexer.CurrentChar == '=' {
-				lexer.advance(1)
-				return token.NewToken(token.BITWISE_OR_ASSIGN, "|=")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.BITWISE_OR_ASSIGN, "|="), advanceAmount
 			}
 
-			return token.NewToken(token.BITWISE_OR, "|")
+			return token.NewToken(token.BITWISE_OR, "|"), advanceAmount
 		}
 
 		// BITWISE XOR
 		if lexer.CurrentChar == '^' {
-			lexer.advance(1)
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
 
 			// BITWISE XOR ASSIGN
 			if lexer.CurrentChar == '=' {
-				lexer.advance(1)
-				return token.NewToken(token.BITWISE_XOR_ASSIGN, "^=")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.BITWISE_XOR_ASSIGN, "^="), advanceAmount
 			}
 
-			return token.NewToken(token.BITWISE_XOR, "|")
+			return token.NewToken(token.BITWISE_XOR, "|"), advanceAmount
 		}
 
 		// LOGICAL NOT
 		if lexer.CurrentChar == '!' {
-			lexer.advance(1)
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
 
 			// INEQUALITY
 			if lexer.CurrentChar == '=' {
-				lexer.advance(1)
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
 
 				// STRICT INEQUALITY
 				if lexer.CurrentChar == '=' {
-					lexer.advance(1)
-					return token.NewToken(token.STRICT_INEQUALITY, "!==")
+					advanceAmount += 1
+					lexer.advance(advanceAmount)
+					return token.NewToken(token.STRICT_INEQUALITY, "!=="), advanceAmount
 				}
 
-				return token.NewToken(token.INEQUALITY, "!=")
+				return token.NewToken(token.INEQUALITY, "!="), advanceAmount
 			}
 
-			return token.NewToken(token.LOGICAL_NOT, "!")
+			return token.NewToken(token.LOGICAL_NOT, "!"), advanceAmount
 		}
 
 		// NULLISH
 		if lexer.CurrentChar == '?' && lexer.peek(1) == '?' {
-			lexer.advance(2)
+			advanceAmount += 2
+			lexer.advance(advanceAmount)
 
 			// LOGICAL NULLISH ASSIGN
 			if lexer.CurrentChar == '=' {
-				lexer.advance(1)
-				return token.NewToken(token.LOGICAL_NULLISH_ASSIGN, "??=")
+				advanceAmount += 1
+				lexer.advance(advanceAmount)
+				return token.NewToken(token.LOGICAL_NULLISH_ASSIGN, "??="), advanceAmount
 			}
 
-			return token.NewToken(token.NULLISH, "??")
+			return token.NewToken(token.NULLISH, "??"), advanceAmount
 		}
 
 		// OPTIONAL CHAINING
 		if lexer.CurrentChar == '?' && lexer.peek(1) == '.' {
-			lexer.advance(2)
-			return token.NewToken(token.OPTIONAL_CHAINING, "?.")
+			advanceAmount += 2
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.OPTIONAL_CHAINING, "?."), advanceAmount
 		}
 
 		// BITWISE NOT
 		if lexer.CurrentChar == '~' {
-			lexer.advance(1)
-			return token.NewToken(token.BITWISE_NOT, "~")
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.BITWISE_NOT, "~"), advanceAmount
 		}
 
 		if lexer.CurrentChar == '(' {
-			lexer.advance(1)
-			return token.NewToken(token.LPAREN, "(")
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.LPAREN, "("), advanceAmount
 		}
 
 		if lexer.CurrentChar == ')' {
-			lexer.advance(1)
-			return token.NewToken(token.RPAREN, ")")
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.RPAREN, ")"), advanceAmount
 		}
 
 		if lexer.CurrentChar == '[' {
-			lexer.advance(1)
-			return token.NewToken(token.LBRACKET, "[")
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.LBRACKET, "["), advanceAmount
 		}
 
 		if lexer.CurrentChar == ']' {
-			lexer.advance(1)
-			return token.NewToken(token.RBRACKET, "]")
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.RBRACKET, "]"), advanceAmount
 		}
 
 		if lexer.CurrentChar == '{' {
-			lexer.advance(1)
-			return token.NewToken(token.LBRACE, "{")
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.LBRACE, "{"), advanceAmount
 		}
 
 		if lexer.CurrentChar == '}' {
-			lexer.advance(1)
-			return token.NewToken(token.RBRACE, "}")
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.RBRACE, "}"), advanceAmount
 		}
 
 		if lexer.CurrentChar == '"' {
-			lexer.advance(1)
-			return token.NewToken(token.DOUBLE_QUOTE, "\"")
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.DOUBLE_QUOTE, "\""), advanceAmount
 		}
 
 		if lexer.CurrentChar == '\'' {
-			lexer.advance(1)
-			return token.NewToken(token.SINGLE_QUOTE, "'")
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.SINGLE_QUOTE, "'"), advanceAmount
 		}
 
 		if lexer.CurrentChar == '`' {
-			lexer.advance(1)
-			return token.NewToken(token.BACKTICK, "`")
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.BACKTICK, "`"), advanceAmount
 		}
 
 		if lexer.CurrentChar == '#' {
-			lexer.advance(1)
-			return token.NewToken(token.POUND, "#")
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.POUND, "#"), advanceAmount
 		}
 
 		if lexer.CurrentChar == '$' {
-			lexer.advance(1)
-			return token.NewToken(token.DOLLAR, "$")
+			advanceAmount += 1
+			lexer.advance(advanceAmount)
+			return token.NewToken(token.DOLLAR, "$"), advanceAmount
 		}
 	}
-	return token.NewToken(token.EOF, 0)
+	return token.NewToken(token.EOF, 0), advanceAmount
 }
 
 // whitespace :
 // Skips any whitespace picked up by the lexer.
-func (lexer *Lexer) whitespace() {
+func (lexer *Lexer) whitespace() int {
+	advanceAmount := 0
 	for lexer.CurrentChar != 0 && unicode.IsWhitespace(lexer.CurrentChar) {
+		advanceAmount += 1
 		lexer.advance(1)
 	}
+	return advanceAmount
 }
 
 // advance :
