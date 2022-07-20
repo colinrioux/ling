@@ -158,3 +158,109 @@ func (parser *Parser) parseExpressionStatement() *ast.Node {
 func (parser *Parser) parseIfStatement() *ast.Node {
 	return nil
 }
+
+// parseIterationStatement :
+// Parses an iteration statement.
+//
+//	IterationStatement : DoWhileStatement
+//	                   | WhileStatement
+//	                   | ForStatement
+//	                   | ForInOfStatement
+// https://tc39.es/ecma262/#prod-IterationStatement
+func (parser *Parser) parseIterationStatement() *ast.Node {
+	return nil
+}
+
+// parseDoWhileStatement :
+// Parses a do while statement.
+//
+//	DoWhileStatement : do Statement while ( Expression ) ;
+// https://tc39.es/ecma262/#prod-DoWhileStatement
+func (parser *Parser) parseDoWhileStatement() *ast.Node {
+	return nil
+}
+
+// parseWhileStatement :
+// Parses a while statement.
+//
+//	WhileStatement : while ( Expression ) Statement
+// https://tc39.es/ecma262/#prod-WhileStatement
+func (parser *Parser) parseWhileStatement() *ast.Node {
+	return nil
+}
+
+// parseForStatement :
+// Parses a for statement.
+//
+//	ForStatement : for ( [lookahead not equal let [] Expression? ; Expression? ; Expression? ) Statement
+//	             | for ( var VariableDeclarationList ; Expression? ; Expression? ) Statement
+//	             | for ( LexicalDeclaration Expression? ; Expression? ) Statement
+// https://tc39.es/ecma262/#prod-ForStatement
+func (parser *Parser) parseForStatement() *ast.Node {
+	return nil
+}
+
+// parseForInOfStatement :
+// Parses a for-in, for-of, or for-await-of statement.
+//
+//	ForInOfStatement : for ( [lookahead not equal let [] LeftHandSideExpression in Expression ) Statement
+//	                 | for ( var ForBinding in Expression ) Statement
+//	                 | for ( ForDeclaration in Expression ) Statement
+//	                 | for ( [lookahead not in set(let, async of)] LeftHandSideExpression of AssignmentExpression ) Statement
+//	                 | for ( var ForBinding of AssignmentExpression ) Statement
+//	                 | for ( ForDeclaration of AssignmentExpression ) Statement
+//	                 | for await ( [lookahead not equal let] LeftHandSideExpression of AssignmentExpression ) Statement
+//	                 | for await ( var ForBinding of AssignmentExpression ) Statement
+//	                 | for ( ForDeclaration in Expression ) Statement
+// https://tc39.es/ecma262/#prod-ForInOfStatement
+func (parser *Parser) parseForInOfStatement() *ast.Node {
+	return nil
+}
+
+// parseContinueStatement :
+// Parses a continue statement.
+//
+//	ContinueStatement : continue ;
+//	                  | continue [no LineTerminator] LabelIdentifier ;
+// https://tc39.es/ecma262/#prod-ContinueStatement
+func (parser *Parser) parseContinueStatement() *ast.Node {
+	return nil
+}
+
+// parseBreakStatement :
+// Parses a break statement.
+//
+//	BreakStatement : break ;
+//	               | break [no LineTerminator] LabelIdentifier ;
+// https://tc39.es/ecma262/#prod-BreakStatement
+func (parser *Parser) parseBreakStatement() *ast.Node {
+	return nil
+}
+
+// parseReturnStatement :
+// Parses a return statement.
+//
+//	ReturnStatement : return ;
+//	                | return [no LineTerminator] Expression ;
+// https://tc39.es/ecma262/#prod-ReturnStatement
+func (parser *Parser) parseReturnStatement() *ast.Node {
+	return nil
+}
+
+// parseWithStatement :
+// Parses a with statement.
+//
+//	WithStatement : with ( Expression ) Statement
+// https://tc39.es/ecma262/#sec-with-statement LEGACY
+func (parser *Parser) parseWithStatement() *ast.Node {
+	return nil
+}
+
+// parseSwitchStatement :
+// Parses a switch statement.
+//
+//	SwitchStatement : switch ( Expression ) CaseBlock
+// https://tc39.es/ecma262/#prod-SwitchStatement
+func (parser *Parser) parseSwitchStatement() *ast.Node {
+	return nil
+}

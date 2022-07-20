@@ -116,3 +116,13 @@ func (parser *Parser) parseSingleNameBinding() *ast.Node {
 func (parser *Parser) parseBindingRestElement() *ast.Node {
 	return nil
 }
+
+// parseForBinding :
+// Parses a for binding.
+//
+//	ForBinding : BindingIdentifier
+//	           | BindingPattern
+// https://tc39.es/ecma262/#prod-ForBinding
+func (parser *Parser) parseForBinding() *ast.Node {
+	return nil
+}

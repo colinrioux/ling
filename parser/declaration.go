@@ -48,3 +48,12 @@ func (parser *Parser) parseVariableDeclaration() *ast.Node {
 	//}
 	return nil
 }
+
+// parseForDeclaration :
+// Parses a for declaration.
+//
+//	ForDeclaration : LetOrConst ForBinding
+// https://tc39.es/ecma262/#prod-ForDeclaration
+func (parser *Parser) parseForDeclaration() *ast.Node {
+	return nil
+}
