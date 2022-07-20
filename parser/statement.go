@@ -137,3 +137,24 @@ func (parser *Parser) parseVariableStatement() *ast.Node {
 	}
 	return (*ast.Node)(node)
 }
+
+// parseExpressionStatement :
+// Parses an expression statement.
+//
+//	ExpressionStatement :
+//		[lookahead not in set({, function, async [no line terminator] function, class, let, [)]? Expression ;
+// https://tc39.es/ecma262/#prod-ExpressionStatement
+func (parser *Parser) parseExpressionStatement() *ast.Node {
+	//lookAhead := parser.CurrentToken
+	return nil
+}
+
+// parseIfStatement :
+// Parses an if statement.
+//
+//	IfStatement : if ( Expression ) Statement else Statement
+//	            | if ( Expression ) Statement [lookahead not equal else]
+// https://tc39.es/ecma262/#prod-IfStatement
+func (parser *Parser) parseIfStatement() *ast.Node {
+	return nil
+}
