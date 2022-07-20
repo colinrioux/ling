@@ -11,6 +11,7 @@ import (
 // A type to represent an ECMA parser.
 type Parser struct {
 	CurrentToken *token.Token
+	NextToken    *token.Token // lookahead
 	Lexer        *lexer.Lexer
 }
 
@@ -21,6 +22,9 @@ func NewParserString(text string) *Parser {
 		Lexer: lexer.NewLexerString(text),
 	}
 	p.CurrentToken, _ = p.Lexer.GetNextToken()
+
+	// when you can't think of a better way to make a lookahead.
+	p.NextToken, _ = p.Lexer.GetNextToken()
 	return p
 }
 
@@ -31,6 +35,9 @@ func NewParserFile(fileName string) *Parser {
 		Lexer: lexer.NewLexerFile(fileName),
 	}
 	p.CurrentToken, _ = p.Lexer.GetNextToken()
+
+	// when you can't think of a better way to make a lookahead.
+	p.NextToken, _ = p.Lexer.GetNextToken()
 	return p
 }
 
@@ -38,7 +45,8 @@ func NewParserFile(fileName string) *Parser {
 // Instruct the parser to eat the CurrentToken if it matches tokenType and get the next token from the lexer.
 func (parser *Parser) eat(tokenType token.Type) {
 	if tokenType == parser.CurrentToken.Type {
-		parser.CurrentToken, _ = parser.Lexer.GetNextToken()
+		parser.CurrentToken = parser.NextToken
+		parser.NextToken, _ = parser.Lexer.GetNextToken()
 	}
 }
 

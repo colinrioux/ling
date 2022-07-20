@@ -14,7 +14,7 @@ func (lexer *Lexer) getIdentifierOrKeyword() (*token.Token, int) {
 	for lexer.CurrentChar != 0 && literal.IsAlphaNumeric(lexer.CurrentChar) {
 		result += string(lexer.CurrentChar)
 		advanceAmount += 1
-		lexer.advance(advanceAmount)
+		lexer.advance(1)
 	}
 
 	k1 := keyword.GetReservedKeyword(result)
