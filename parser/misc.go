@@ -52,3 +52,42 @@ func (parser *Parser) parseCaseClause() *ast.Node {
 func (parser *Parser) parseDefaultClause() *ast.Node {
 	return nil
 }
+
+// parseLabelledItem :
+// Parses a labelled item.
+//
+//	LabelledItem : Statement
+//	             | FunctionDeclaration
+// https://tc39.es/ecma262/#prod-LabelledItem
+func (parser *Parser) parseLabelledItem() *ast.Node {
+	return nil
+}
+
+// parseCatch :
+// Parses a catch.
+//
+//	Catch : catch ( CatchParameter ) Block
+//	      | catch Block
+// https://tc39.es/ecma262/#prod-Catch
+func (parser *Parser) parseCatch() *ast.Node {
+	return nil
+}
+
+// parseFinally :
+// Parses a finally.
+//
+//	Finally : finally Block
+// https://tc39.es/ecma262/#prod-Finally
+func (parser *Parser) parseFinally() *ast.Node {
+	return nil
+}
+
+// parseCatchParameter :
+// Parses a catch parameter.
+//
+//	CatchParameter : BindingIdentifier
+//	               | BindingPattern
+// https://tc39.es/ecma262/#prod-CatchParameter
+func (parser *Parser) parseCatchParameter() *ast.Node {
+	return nil
+}

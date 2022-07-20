@@ -264,3 +264,41 @@ func (parser *Parser) parseWithStatement() *ast.Node {
 func (parser *Parser) parseSwitchStatement() *ast.Node {
 	return nil
 }
+
+// parseLabelledStatement :
+// Parses a labelled statement.
+//
+//	LabelledStatement : LabelIdentifier : LabelledItem
+// https://tc39.es/ecma262/#prod-LabelledStatement
+func (parser *Parser) parseLabelledStatement() *ast.Node {
+	return nil
+}
+
+// parseThrowStatement :
+// Parses a throw statement.
+//
+//	ThrowStatement : throw [no LineTerminator] Expression ;
+// https://tc39.es/ecma262/#prod-ThrowStatement
+func (parser *Parser) parseThrowStatement() *ast.Node {
+	return nil
+}
+
+// parseTryStatement :
+// Parses a try statement.
+//
+//	TryStatement : try Block Catch
+//	             | try Block Finally
+//	             | try Block Catch Finally
+// https://tc39.es/ecma262/#prod-TryStatement
+func (parser *Parser) parseTryStatement() *ast.Node {
+	return nil
+}
+
+// parseDebuggerStatement :
+// Parses a debugger statement.
+//
+//	DebuggerStatement : debugger ;
+// https://tc39.es/ecma262/#sec-debugger-statement
+func (parser *Parser) parseDebuggerStatement() *ast.Node {
+	return nil
+}
