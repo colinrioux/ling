@@ -56,6 +56,12 @@ func (node *Node) String() string {
 		return (*BlockNode)(node).String()
 	case VariableDeclarationNodeType:
 		return (*VariableDeclarationNode)(node).String()
+	case DebuggerNodeType:
+		return (*DebuggerNode)(node).String()
+	case EmptyNodeType:
+		return (*EmptyNode)(node).String()
+	case TryNodeType:
+		return (*TryNode)(node).String()
 	}
 	return fmt.Sprintf("ASTNode(%v,%v)", node.ChildrenToString(), node.Token)
 }
@@ -63,15 +69,21 @@ func (node *Node) String() string {
 func (node *Node) ChildrenToString() string {
 	m := len(node.Children)
 	str := "Children("
+	j := 0
 	for i, child := range node.Children {
 		if child == nil {
-			str += fmt.Sprintf("%d=nil", i)
+			//str += fmt.Sprintf("%d=nil", i)
+			//if i < m-1 {
+			//	str += ","
+			//}
 			continue
 		}
-		str += fmt.Sprintf("%d=%v", i, child)
-		if i != m-1 {
+		if i < m-1 && i != 0 {
 			str += ","
 		}
+		str += fmt.Sprintf("%d=%v", j, child)
+		j++
+
 	}
 	str += ")"
 	return str
@@ -88,8 +100,23 @@ const (
 	AssignmentNodeType
 	BlockNodeType
 	VariableDeclarationNodeType
+	DebuggerNodeType
+	EmptyNodeType
+	TryNodeType
 )
 
 // EmptyNode :
 // Used to represent useless nodes (with default initialization).
 type EmptyNode Node
+
+// NewEmptyNode :
+// Creates a new empty node.
+func NewEmptyNode() *EmptyNode {
+	return &EmptyNode{
+		Type: EmptyNodeType,
+	}
+}
+
+func (node *EmptyNode) String() string {
+	return fmt.Sprintf("EmptyNode()")
+}

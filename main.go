@@ -3,16 +3,12 @@ package main
 import (
 	"fmt"
 	"ling/parser"
+	"log"
 )
 
 func main() {
-	//psr := parser.NewParserString("var x = \"hi\"")
-	//psr := parser.NewParserString("var t")
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	psr := parser.NewParserFile("test.js")
-	//fmt.Println(psr.Lexer.Text)
-	//fmt.Printf("Len of text: %d\n", len(psr.Lexer.Text))
-	fmt.Println(psr.CurrentToken)
-	fmt.Println(psr.NextToken)
 	tree := psr.Parse()
 	if tree != nil {
 		fmt.Printf("Tree: %v ; Visit Result:%v\n", tree.String(), tree.Visit())

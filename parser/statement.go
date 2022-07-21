@@ -6,6 +6,7 @@ import (
 	"ling/lexer/token"
 	"ling/parser/ast"
 	"log"
+	"runtime/debug"
 )
 
 // parseStatement :
@@ -37,8 +38,15 @@ func (parser *Parser) parseStatement() *ast.Node {
 		return parser.parseBlockStatement()
 	} else if parser.CurrentToken.Type == token.KEYWORD && parser.CurrentToken.Value == keyword.VAR {
 		return parser.parseVariableStatement()
+	} else if parser.CurrentToken.Type == token.SEMICOLON {
+		return parser.parseEmptyStatement()
+	} else if parser.CurrentToken.Type == token.KEYWORD && parser.CurrentToken.Value == keyword.TRY {
+		return parser.parseTryStatement()
+	} else if parser.CurrentToken.Type == token.KEYWORD && parser.CurrentToken.Value == keyword.DEBUGGER {
+		return parser.parseDebuggerStatement()
 	}
-	return parser.parseEmptyStatement()
+
+	return nil
 }
 
 // parseEmptyStatement :
@@ -47,13 +55,12 @@ func (parser *Parser) parseStatement() *ast.Node {
 // 	EmptyStatement : ;
 // https://tc39.es/ecma262/#prod-EmptyStatement
 func (parser *Parser) parseEmptyStatement() *ast.Node {
-	if parser.CurrentToken == nil {
+	if parser.CurrentToken.Type != token.SEMICOLON {
 		// TODO error handling
-		log.Println("invalid syntax pes")
-		return nil
+		log.Fatal(fmt.Sprintf("invalid syntax %v\n%v", parser.CurrentToken, string(debug.Stack())))
 	}
 	parser.eat(token.SEMICOLON)
-	return (*ast.Node)(&ast.EmptyNode{})
+	return (*ast.Node)(ast.NewEmptyNode())
 }
 
 // parseBlockStatement :
@@ -63,25 +70,6 @@ func (parser *Parser) parseEmptyStatement() *ast.Node {
 // https://tc39.es/ecma262/#prod-BlockStatement
 func (parser *Parser) parseBlockStatement() *ast.Node {
 	return parser.parseBlock()
-}
-
-// parseBlock :
-// Parses a block.
-//
-// 	Block : { StatementList }
-// https://tc39.es/ecma262/#prod-Block
-func (parser *Parser) parseBlock() *ast.Node {
-	parser.eat(token.LBRACE)
-	nodes := parser.parseStatementList()
-	parser.eat(token.RBRACE)
-
-	// Build the AST node for the block
-	root := ast.NewBlockNode2()
-	for _, node := range nodes {
-		root.Children = append(root.Children, node)
-	}
-
-	return (*ast.Node)(root)
 }
 
 // parseStatementList :
@@ -291,7 +279,18 @@ func (parser *Parser) parseThrowStatement() *ast.Node {
 //	             | try Block Catch Finally
 // https://tc39.es/ecma262/#prod-TryStatement
 func (parser *Parser) parseTryStatement() *ast.Node {
-	return nil
+	parser.eat(token.KEYWORD)
+	var block, catch, finally *ast.Node
+	block = parser.parseBlock()
+	if parser.CurrentToken.Type == token.KEYWORD && parser.CurrentToken.Value == keyword.CATCH {
+		catch = parser.parseCatch()
+	}
+
+	if parser.CurrentToken.Type == token.KEYWORD && parser.CurrentToken.Value == keyword.FINALLY {
+		finally = parser.parseFinally()
+	}
+
+	return (*ast.Node)(ast.NewTryNode(block, catch, finally))
 }
 
 // parseDebuggerStatement :
@@ -300,5 +299,11 @@ func (parser *Parser) parseTryStatement() *ast.Node {
 //	DebuggerStatement : debugger ;
 // https://tc39.es/ecma262/#sec-debugger-statement
 func (parser *Parser) parseDebuggerStatement() *ast.Node {
-	return nil
+	parser.eat(token.KEYWORD)
+	if parser.CurrentToken.Type != token.SEMICOLON {
+		// TODO better error handling
+		log.Fatal("invalid syntax")
+	}
+	parser.eat(token.SEMICOLON)
+	return (*ast.Node)(ast.NewDebuggerNode())
 }

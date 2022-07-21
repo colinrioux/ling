@@ -91,3 +91,22 @@ func (parser *Parser) parseFinally() *ast.Node {
 func (parser *Parser) parseCatchParameter() *ast.Node {
 	return nil
 }
+
+// parseBlock :
+// Parses a block.
+//
+// 	Block : { StatementList }
+// https://tc39.es/ecma262/#prod-Block
+func (parser *Parser) parseBlock() *ast.Node {
+	parser.eat(token.LBRACE)
+	nodes := parser.parseStatementList()
+	parser.eat(token.RBRACE)
+
+	// Build the AST node for the block
+	root := ast.NewBlockNode2()
+	for _, node := range nodes {
+		root.Children = append(root.Children, node)
+	}
+
+	return (*ast.Node)(root)
+}
