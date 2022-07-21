@@ -83,14 +83,9 @@ func (parser *Parser) parseStatementList() []*ast.Node {
 	nodes := []*ast.Node{node}
 
 	// Parse additional items if there are any.
-	if parser.CurrentToken == nil {
-		// TODO error handling
-		fmt.Println("invalid syntax psl")
-		return nodes
-	}
-
 	for parser.CurrentToken.Type != token.EOF && parser.CurrentToken.Type != token.RBRACE {
-		parser.CurrentToken, _ = parser.Lexer.GetNextToken()
+		parser.CurrentToken = parser.NextToken
+		parser.NextToken, _ = parser.Lexer.GetNextToken()
 		nodes = append(nodes, parser.parseStatementListItem())
 	}
 
